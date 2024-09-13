@@ -3,9 +3,8 @@
   hosts: localhost
   tasks:
     - name: Get my user
-      become: yes
       ansible.builtin.set_fact:
-        remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
+        remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 
     - name: Install dependencies
       become: yes
