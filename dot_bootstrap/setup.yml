@@ -6,6 +6,10 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 
+    - name: Debug ansible_os_family
+      debug:
+        msg: "OS Family: {{ ansible_os_family }}"
+
     - name: Install dependencies
       become: yes
       package:
