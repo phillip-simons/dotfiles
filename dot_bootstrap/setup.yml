@@ -44,7 +44,7 @@
           become: yes
 
         - name: Install dependencies using yay
-          command: yay --noconfirm -S bash bash-completion tar bat tree multitail fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
+          command: yay --noconfirm -S bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
           become: yes
 
       when: ansible_os_family == 'Arch'
