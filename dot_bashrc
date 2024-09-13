@@ -1,0 +1,31 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+PS1='[\u@\h \W]\$ '
+. "$HOME/.cargo/env"
+
+# cargo bin
+export PATH="$PATH:$HOME/.cargo/bin"
+
+
+# sccache settings
+export SCCACHE_CACHE_SIZE=100G
+export CMAKE_C_COMPILER_LAUNCHER=sccache
+export CMAKE_CXX_COMPILER_LAUNCHER=sccache
+
+
+# set up NVM
+source /usr/share/nvm/init-nvm.sh
+
+export PATH="$PATH:$HOME/.ghcup/bin"
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PATH="$PATH:$HOME/.ghcup/bin"
+export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"

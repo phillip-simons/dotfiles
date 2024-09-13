@@ -1,0 +1,5 @@
+[user]
+	name = Phillip Simons
+	email = phillip@book.io
+[maintenance]
+	repo = /home/phillip/code/booktoken-web

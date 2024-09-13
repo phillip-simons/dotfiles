@@ -1,0 +1,35 @@
+alias ls='lsd -al --color=always --group-directories-first' # my preferred listing
+alias la='lsd -a --color=always --group-directories-first'  # all files and dirs
+alias ll='lsd -l --color=always --group-directories-first'  # long format
+alias lt='lsd -aT --color=always --group-directories-first' # tree listing
+alias l.='lsd -al --color=always --group-directories-first ../' # ls on the PARENT directory
+alias l..='lsd -al --color=always --group-directories-first ../../' # ls on directory 2 levels up
+alias l...='lsd -al --color=always --group-directories-first ../../../' # ls on directory 3 levels up
+
+alias df='df -h'               # human-readable sizes
+alias free='free -m'           # show sizes in MB
+alias grep='grep --color=auto' # colorize output (good for log files)
+alias du='du --max-depth=1 -h'
+alias ftldr='compgen -c | fzf | xargs tldr'
+alias fman='compgen -c | fzf | xargs man'
+
+alias cat='bat'
+alias emacs="emacsclient -c -a 'emacs'" # GUI versions of Emacs
+alias em="/usr/bin/emacs -nw" # Terminal version of Emacs
+alias vim="nvim"
+
+alias viz='chezmoi edit .zshrc'
+alias vit='chezmoi edit ~/.config/tmux/tmux.conf'
+alias src='source ~/.zshrc && tmux source ~/.config/tmux/tmux.conf'
+
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
+
+alias c='clear'
+alias please='sudo !!'
+
+alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" # Kill Emacs and restart daemon..
