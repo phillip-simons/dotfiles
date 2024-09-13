@@ -1,0 +1,132 @@
+---
+- name: Setup Environment
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create linuxtoolbox directory
+      file:
+        path: "{{ ansible_env.HOME }}/linuxtoolbox"
+        state: directory
+
+    - name: Remove old mybash directory if it exists
+      file:
+        path: "{{ ansible_env.HOME }}/linuxtoolbox/mybash"
+        state: absent
+
+    - name: Clone mybash repository
+      git:
+        repo: https://github.com/phillip-simons/mybash.git
+        dest: "{{ ansible_env.HOME }}/linuxtoolbox/mybash"
+        update: yes
+
+    - name: Check for required commands
+      command: "{{ item }}"
+      register: result
+      ignore_errors: yes
+      loop:
+        - curl
+        - groups
+        - sudo
+      failed_when: result.failed and result.rc != 0
+
+    - name: Install dependencies
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - bash
+        - bash-completion
+        - tar
+        - bat
+        - tree
+        - multitail
+        - fastfetch
+        - wget
+        - unzip
+        - fontconfig
+        - neovim
+        - ripgrep
+        - btop
+        - git
+
+        - tmux
+        - zsh
+      when: ansible_os_family != 'Arch'
+
+    - name: Install AUR helper and dependencies (Arch-based)
+      block:
+        - name: Install yay
+          git:
+            repo: https://aur.archlinux.org/yay-git.git
+            dest: /opt/yay-git
+            clone: yes
+          become: yes
+
+        - name: Build and install yay
+          command: |
+            cd /opt/yay-git && makepkg --noconfirm -si
+          become: yes
+
+        - name: Install dependencies using yay
+          command: yay --noconfirm -S bash bash-completion tar bat tree multitail fastfetch wget unzip fontconfig neovim tmux zsh
+          become: yes
+
+      when: ansible_os_family == 'Arch'
+
+    - name: Change shell to zsh
+      ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
+        shell: /usr/bin/zsh
+
+    - name: Install Fzf
+      block:
+        - name: Install Fzf
+          git:
+            repo: https://github.com/junegunn/fzf.git
+            dest: "{{ ansible_env.HOME }}/.fzf"
+            clone: yes
+
+        - name: Run Fzf install script
+          command: "{{ ansible_env.HOME }}/.fzf/install"
+          args:
+            executable: /bin/bash
+          become: yes
+
+    - name: Install Zoxide
+      shell: |
+        curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+      args:
+        executable: /bin/bash
+
+    - name: Install JetBrainsMono Nerd Font
+      block:
+        - name: Download JetBrainsMono Nerd Font
+          get_url:
+            url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip"
+            dest: "/tmp/JetBrainsMono.zip"
+
+        - name: Extract and Install Font
+          unarchive:
+            src: "/tmp/JetBrainsMono.zip"
+            dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+            remote_src: yes
+
+        - name: Update Font Cache
+          command: fc-cache -fv
+          become: yes
+
+    - name: Create fastfetch configuration
+      file:
+        src: "{{ ansible_env.HOME }}/linuxtoolbox/mybash/config.jsonc"
+        dest: "{{ ansible_env.HOME }}/.config/fastfetch/config.jsonc"
+        state: link
+
+    - name: Backup old .bashrc if it exists
+      command: mv "{{ ansible_env.HOME }}/.bashrc" "{{ ansible_env.HOME }}/.bashrc.bak"
+      when: ansible_env.HOME + "/.bashrc" is exists
+
+    - name: Link new .bashrc
+      file:
+        src: "{{ ansible_env.HOME }}/linuxtoolbox/mybash/.bashrc"
+        dest: "{{ ansible_env.HOME }}/.bashrc"
+        state: link
