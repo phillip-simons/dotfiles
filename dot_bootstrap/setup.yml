@@ -1,35 +1,9 @@
 ---
 - name: Setup Environment
-  hosts: all
-  become: yes
+  hosts: localhost
   tasks:
-    - name: Create linuxtoolbox directory
-      file:
-        path: "{{ ansible_env.HOME }}/linuxtoolbox"
-        state: directory
-
-    - name: Remove old mybash directory if it exists
-      file:
-        path: "{{ ansible_env.HOME }}/linuxtoolbox/mybash"
-        state: absent
-
-    - name: Clone mybash repository
-      git:
-        repo: https://github.com/phillip-simons/mybash.git
-        dest: "{{ ansible_env.HOME }}/linuxtoolbox/mybash"
-        update: yes
-
-    - name: Check for required commands
-      command: "{{ item }}"
-      register: result
-      ignore_errors: yes
-      loop:
-        - curl
-        - groups
-        - sudo
-      failed_when: result.failed and result.rc != 0
-
     - name: Install dependencies
+      become: yes
       package:
         name: "{{ item }}"
         state: present
@@ -48,9 +22,9 @@
         - ripgrep
         - btop
         - git
-
         - tmux
         - zsh
+        - lsd
       when: ansible_os_family != 'Arch'
 
     - name: Install AUR helper and dependencies (Arch-based)
@@ -68,7 +42,7 @@
           become: yes
 
         - name: Install dependencies using yay
-          command: yay --noconfirm -S bash bash-completion tar bat tree multitail fastfetch wget unzip fontconfig neovim tmux zsh
+          command: yay --noconfirm -S bash bash-completion tar bat tree multitail fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
           become: yes
 
       when: ansible_os_family == 'Arch'
@@ -100,17 +74,24 @@
 
     - name: Install JetBrainsMono Nerd Font
       block:
-        - name: Download JetBrainsMono Nerd Font
-          get_url:
-            url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/JetBrainsMono.zip"
-            dest: "/tmp/JetBrainsMono.zip"
+        - name: Ensure fonts directory
+          ansible.builtin.file:
+            path: "~{{ remote_regular_user }}/.fonts"
+            state: directory
+            mode: "0755"
+            owner: "{{ remote_regular_user }}"
 
-        - name: Extract and Install Font
-          unarchive:
-            src: "/tmp/JetBrainsMono.zip"
-            dest: "{{ ansible_env.HOME }}/.local/share/fonts"
-            remote_src: yes
+        - name: Check if Jetbrains Mono exists
+          ansible.builtin.shell: "ls ~{{ remote_regular_user }}/.fonts/JetBrainsMonoNerd*FontMono*"
+          register: jetbrains_mono_exists
+          ignore_errors: true
+          changed_when: false
 
-        - name: Update Font Cache
-          command: fc-cache -fv
-          become: yes
+        - name: Download Jetbrains mono
+          when: jetbrains_mono_exists is failed
+          ansible.builtin.unarchive:
+            src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/JetBrainsMono.zip
+            dest: "~{{ remote_regular_user }}/.fonts/"
+            remote_src: true
+            mode: "0755"
+            owner: "{{ remote_regular_user }}"
