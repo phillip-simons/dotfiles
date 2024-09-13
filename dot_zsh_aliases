@@ -20,6 +20,7 @@ alias vim="nvim"
 
 alias viz='chezmoi edit .zshrc'
 alias vit='chezmoi edit ~/.config/tmux/tmux.conf'
+alias vic='chezmoi edit'
 alias src='source ~/.zshrc && tmux source ~/.config/tmux/tmux.conf'
 
 alias cd..='cd ..'
