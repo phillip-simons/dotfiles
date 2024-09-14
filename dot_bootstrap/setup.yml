@@ -35,6 +35,17 @@
 
     - name: Install AUR helper and dependencies (Arch-based)
       block:
+        - name: Check if yay is installed
+          shell: |
+            if command -v yay &> /dev/null; then
+              echo "yay is installed"
+            else
+              echo "yay is not installed"
+              exit 1
+            fi
+          register: yay_check
+          ignore_errors: yes
+
         - name: Install yay
           git:
             repo: https://aur.archlinux.org/yay-git.git
