@@ -16,6 +16,8 @@
         - bash-completion
         - tar
         - libfuse2
+        - npm
+        - python3-pip
         - bat
         - tree
         - multitail
