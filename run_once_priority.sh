@@ -14,6 +14,7 @@ install_on_ubuntu() {
     echo "Installing Ansible on Ubuntu..."
     sudo apt-get update
     sudo apt-get install -y ansible
+    sudo add-apt-repository universe
     if [ $? -ne 0 ]; then
         echo "Failed to install Ansible on Ubuntu"
         exit 1
@@ -23,7 +24,6 @@ install_on_ubuntu() {
 install_on_arch() {
     echo "Installing Ansible on Arch-based distro..."
     sudo pacman -Syu --noconfirm ansible
-    sudo add-apt-repository universe
     if [ $? -ne 0 ]; then
         echo "Failed to install Ansible on Arch-based distro"
         exit 1
