@@ -114,9 +114,17 @@
         mode: "0755"
       become: yes
 
-    - name: Create symbolic link to Neovim AppImage
+    - name: Extract Neovim AppImage
+      command: >
+        /usr/local/bin/nvim.appimage --appimage-extract
+      args:
+        creates: "/usr/local/bin/neovim"
+      register: extraction
+      become: yes
+
+    - name: Create symbolic link to Neovim binary
       file:
-        src: "/usr/local/bin/nvim.appimage"
+        src: "{{ extraction.stdout }}/neovim/usr/bin/nvim"
         dest: "/usr/local/bin/nvim"
         state: link
       become: yes
