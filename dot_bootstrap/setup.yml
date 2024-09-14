@@ -6,9 +6,12 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 
-    - name: Debug ansible_os_family
-      debug:
-        msg: "OS Family: {{ ansible_os_family }}"
+    - name: Add neovim PPA
+      become: yes
+      ansible.builtin.apt_repository:
+        repo: ppa:neovim-ppa/stable
+        state: present
+      when: ansible_os_family == 'Debian'
 
     - name: Install dependencies
       become: yes
