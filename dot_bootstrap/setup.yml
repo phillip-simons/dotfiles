@@ -102,38 +102,42 @@
             mode: "0755"
             owner: "{{ remote_regular_user }}"
 
-    - name: Download Neovim AppImage
-      get_url:
-        url: "https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
-        dest: "/usr/local/bin/nvim.appimage"
-        mode: "0755"
-      become: yes
+- name: Download Neovim AppImage
+  get_url:
+    url: "https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
+    dest: "/usr/local/bin/nvim.appimage"
+    mode: "0755"
+  become: yes
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
-    - name: Set executable permissions for Neovim AppImage
-      file:
-        path: "/usr/local/bin/nvim.appimage"
-        state: file
-        mode: "0755"
-      become: yes
+- name: Set executable permissions for Neovim AppImage
+  file:
+    path: "/usr/local/bin/nvim.appimage"
+    state: file
+    mode: "0755"
+  become: yes
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
-    - name: Extract Neovim AppImage
-      command: >
-        /usr/local/bin/nvim.appimage --appimage-extract
-      args:
-        chdir: "/usr/local/bin"
-      register: extraction
-      ignore_errors: yes
-      become: yes
+- name: Extract Neovim AppImage
+  command: >
+    /usr/local/bin/nvim.appimage --appimage-extract
+  args:
+    chdir: "/usr/local/bin"
+  register: extraction
+  ignore_errors: yes
+  become: yes
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
-    - name: Ensure extraction directory exists
-      stat:
-        path: "/usr/local/bin/squashfs-root"
-      register: extraction_stat
+- name: Ensure extraction directory exists
+  stat:
+    path: "/usr/local/bin/squashfs-root"
+  register: extraction_stat
+  when: ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
 
-    - name: Create symbolic link to Neovim binary
-      file:
-        src: "/usr/local/bin/squashfs-root/usr/bin/nvim"
-        dest: "/usr/local/bin/nvim"
-        state: link
-      when: extraction_stat.stat.exists
-      become: yes
+- name: Create symbolic link to Neovim binary
+  file:
+    src: "/usr/local/bin/squashfs-root/usr/bin/nvim"
+    dest: "/usr/local/bin/nvim"
+    state: link
+  when: extraction_stat.stat.exists and ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+  become: yes
