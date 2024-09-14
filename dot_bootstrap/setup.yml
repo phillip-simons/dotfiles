@@ -80,10 +80,9 @@
             clone: yes
 
         - name: Run Fzf install script
-          command: "{{ ansible_env.HOME }}/.fzf/install"
+          command: "{{ ansible_env.HOME }}/.fzf/install --no-key-bindings --completion --update-rc"
           args:
             executable: /bin/bash
-          become: yes
 
     - name: Install Zoxide
       shell: |
