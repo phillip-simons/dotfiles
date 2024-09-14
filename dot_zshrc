@@ -89,6 +89,7 @@ cdls() {
 
 export PATH=”$HOME/.config/emacs/bin:$PATH”
 export PATH="$PATH:/home/phillip/.local/bin"
+export PATH="$PATH:/home/phillip/bin"
 if [ -z "$TMUX" ]; then
   # Check if the 'main' session exists
   if ! tmux has-session -t main 2>/dev/null; then
