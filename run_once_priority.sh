@@ -23,6 +23,7 @@ install_on_ubuntu() {
 install_on_arch() {
     echo "Installing Ansible on Arch-based distro..."
     sudo pacman -Syu --noconfirm ansible
+    sudo add-apt-repository universe
     if [ $? -ne 0 ]; then
         echo "Failed to install Ansible on Arch-based distro"
         exit 1
@@ -60,7 +61,6 @@ case "${OS}" in
         exit 1
         ;;
 esac
-sudo add-apt-repository universe
 
 ansible-playbook ~/.bootstrap/setup.yml --ask-become-pass
 
