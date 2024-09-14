@@ -139,5 +139,5 @@
             src: "/usr/local/bin/squashfs-root/usr/bin/nvim"
             dest: "/usr/local/bin/nvim"
             state: link
-          when: extraction_stat.stat.exists and ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
+          when: extraction_stat.stat is defined and extraction_stat.stat.exists and ansible_distribution == "Ubuntu" and ansible_distribution_version == "22.04"
           become: yes
