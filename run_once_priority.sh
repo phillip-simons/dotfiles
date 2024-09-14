@@ -42,12 +42,12 @@ install_on_mac() {
 OS="$(uname -s)"
 case "${OS}" in
     Linux*)
-        if [ -f /etc/fedora-release ]; then
+        if [ -f /etc/os-release ] && grep -q "ID=arch" /etc/os-release; then
+            install_on_arch
+        elif [ -f /etc/fedora-release ]; then
             install_on_fedora
         elif [ -f /etc/lsb-release ]; then
             install_on_ubuntu
-        elif [ -f /etc/os-release ] && grep -q "ID=arch" /etc/os-release; then
-            install_on_arch
         else
             echo "Unsupported Linux distribution"
             exit 1
