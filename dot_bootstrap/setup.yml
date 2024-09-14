@@ -29,6 +29,7 @@
         - ripgrep
         - btop
         - git
+        - build-essential
         - tmux
         - zsh
       when: ansible_os_family != 'Archlinux'
@@ -61,7 +62,7 @@
           when: yay_check.failed
 
         - name: Install dependencies using yay
-          command: yay --noconfirm -S bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
+          command: yay --noconfirm -S base-devel bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
           become: yes
 
       when: ansible_os_family == 'Archlinux'
