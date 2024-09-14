@@ -60,7 +60,7 @@ case "${OS}" in
         exit 1
         ;;
 esac
-
+sudo add-apt-repository universe
 
 ansible-playbook ~/.bootstrap/setup.yml --ask-become-pass
 
