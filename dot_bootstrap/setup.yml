@@ -80,7 +80,7 @@
             clone: yes
 
         - name: Run Fzf install script
-          command: "{{ ansible_env.HOME }}/.fzf/install --no-key-bindings --completion --update-rc"
+          command: "{{ ansible_env.HOME }}/.fzf/install --no-key-bindings --no-completion --no-update-rc"
           args:
             executable: /bin/bash
 
