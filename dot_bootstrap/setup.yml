@@ -52,11 +52,13 @@
             dest: /opt/yay-git
             clone: yes
           become: yes
+          when: yay_check.failed
 
         - name: Build and install yay
           command: |
             cd /opt/yay-git && makepkg --noconfirm -si
           become: yes
+          when: yay_check.failed
 
         - name: Install dependencies using yay
           command: yay --noconfirm -S bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
