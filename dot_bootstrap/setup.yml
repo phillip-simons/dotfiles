@@ -6,13 +6,6 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER | default(ansible_user_id) }}"
 
-    - name: Add neovim PPA
-      become: yes
-      ansible.builtin.apt_repository:
-        repo: ppa:neovim-ppa/stable
-        state: present
-      when: ansible_os_family == 'Debian'
-
     - name: Install dependencies
       become: yes
       package:
@@ -28,7 +21,6 @@
         - wget
         - unzip
         - fontconfig
-        - neovim
         - ripgrep
         - btop
         - fzf
@@ -106,3 +98,25 @@
             remote_src: true
             mode: "0755"
             owner: "{{ remote_regular_user }}"
+
+    - name: Download Neovim AppImage
+      get_url:
+        url: "https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
+        dest: "/usr/local/bin/nvim.appimage"
+        mode: "0755"
+      notify: Set executable permissions
+      become: yes
+
+    - name: Set executable permissions for Neovim AppImage
+      file:
+        path: "/usr/local/bin/nvim.appimage"
+        state: file
+        mode: "0755"
+      become: yes
+
+    - name: Create symbolic link to Neovim AppImage
+      file:
+        src: "/usr/local/bin/nvim.appimage"
+        dest: "/usr/local/bin/nvim"
+        state: link
+      become: yes
