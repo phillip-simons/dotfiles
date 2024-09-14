@@ -121,6 +121,7 @@
         chdir: "/usr/local/bin"
       register: extraction
       ignore_errors: yes
+      become: yes
 
     - name: Ensure extraction directory exists
       stat:
@@ -133,3 +134,4 @@
         dest: "/usr/local/bin/nvim"
         state: link
       when: extraction_stat.stat.exists
+      become: yes
