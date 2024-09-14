@@ -67,6 +67,7 @@
       when: ansible_os_family == 'Archlinux'
 
     - name: Change shell to zsh
+      become: yes
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
