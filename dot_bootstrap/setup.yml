@@ -104,7 +104,6 @@
         url: "https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
         dest: "/usr/local/bin/nvim.appimage"
         mode: "0755"
-      notify: Set executable permissions
       become: yes
 
     - name: Set executable permissions for Neovim AppImage
