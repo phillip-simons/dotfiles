@@ -118,13 +118,18 @@
       command: >
         /usr/local/bin/nvim.appimage --appimage-extract
       args:
-        creates: "/usr/local/bin/neovim"
+        chdir: "/usr/local/bin"
       register: extraction
-      become: yes
+      ignore_errors: yes
+
+    - name: Ensure extraction directory exists
+      stat:
+        path: "/usr/local/bin/squashfs-root"
+      register: extraction_stat
 
     - name: Create symbolic link to Neovim binary
       file:
-        src: "{{ extraction.stdout }}/neovim/usr/bin/nvim"
+        src: "/usr/local/bin/squashfs-root/usr/bin/nvim"
         dest: "/usr/local/bin/nvim"
         state: link
-      become: yes
+      when: extraction_stat.stat.exists
