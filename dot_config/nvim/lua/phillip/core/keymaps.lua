@@ -38,3 +38,9 @@ keymap.set("n", "<leader>x", "", { desc = "Diagnostics" })
 keymap.set("n", "<leader>s", "", { desc = "Splits" })
 keymap.set("n", "<leader>g", "", { desc = "LSP" })
 keymap.set("n", "<leader>b", "", { desc = "Buffers" })
+
+keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+
+keymap.set("v", "<", "<gv")
+keymap.set("v", ">", ">gv")
