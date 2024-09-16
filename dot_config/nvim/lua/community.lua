@@ -22,6 +22,7 @@ return {
 	{ import = "astrocommunity.editing-support.cloak-nvim" },
 	{ import = "astrocommunity.note-taking.neorg" },
 	{ import = "astrocommunity.recipes.neovide" },
+	{ import = "astrocommunity.fuzzy-finder.telescope-zoxide" },
 	{ import = "astrocommunity.scrolling.neoscroll-nvim" },
 	{ import = "astrocommunity.motion.nvim-surround" },
 	{ import = "astrocommunity.split-and-window.minimap-vim" },
