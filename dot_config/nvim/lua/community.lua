@@ -19,5 +19,10 @@ return {
   { import = "astrocommunity.color.headlines-nvim" },
   { import = "astrocommunity.editing-support.copilotchat-nvim" },
   { import = "astrocommunity.note-taking.neorg" },
+  { import = "astrocommunity.recipies.neovide" },
+  { import = "astrocommunity.scrolling.neoscroll-nvim" },
+  { import = "astrocommunity.motion.nvim-surround" },
+  { import = "astrocommunity.split-and-window.minimap-vim" },
+  { import = "astrocommunity.utility.telescope-lazy-nvim" },
   -- import/override with your plugins folder
 }
