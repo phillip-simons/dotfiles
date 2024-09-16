@@ -90,14 +90,3 @@ cdls() {
 export PATH=”$HOME/.config/emacs/bin:$PATH”
 export PATH="$PATH:/home/phillip/.local/bin"
 export PATH="$PATH:/home/phillip/bin"
-if [ -z "$TMUX" ]; then
-  # Check if the 'main' session exists
-  if ! tmux has-session -t main 2>/dev/null; then
-    # Create the 'main' session and attach if it didn't exist
-    exec tmux new-session -s main
-  else
-    # Create a new window in the 'main' session and attach
-    tmux new-window -t main
-    exec tmux attach-session -t main
-  fi
-fi
