@@ -8,7 +8,6 @@ alias l...='lsd -al --color=always --group-directories-first ../../../' # ls on 
 
 alias df='df -h'               # human-readable sizes
 alias cz='chezmoi'
-alias free='free -m'           # show sizes in MB
 alias grep='grep --color=auto' # colorize output (good for log files)
 alias du='du --max-depth=1 -h'
 alias ftldr='compgen -c | fzf | xargs tldr'
