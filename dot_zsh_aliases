@@ -28,6 +28,8 @@ alias ta='tmux attach -t'
 alias tn='tmux new-session'
 alias tl='tmux list-sessions'
 
+alias sconnect='sesh connect $(sesh list | fzf)'
+
 alias cd..='cd ..'
 alias ..='cd ..'
 alias ...='cd ../..'
