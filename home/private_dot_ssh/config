@@ -4,27 +4,21 @@ RequestTTY no
 
 Host media-host
   HostName 192.168.2.103
-  User phillip
-  Port 22
-  IdentityFile ~/.ssh/id_default
-  AddKeysToAgent yes
 
 Host pve1-network
   HostName 192.168.2.102
-  User phillip
-  Port 22
-  IdentityFile ~/.ssh/id_default
-  AddKeysToAgent yes
 
 Host pve2-network
   HostName 192.168.2.202
+
+Host media-host pve1-network pve2-network
   User phillip
   Port 22
   IdentityFile ~/.ssh/id_default
   AddKeysToAgent yes
 
 Host github.com
-        User git
-        Hostname github.com
-        PreferredAuthentications publickey
-        IdentityFile ~/.ssh/id_github
+  User git
+  Hostname github.com
+  PreferredAuthentications publickey
+  IdentityFile ~/.ssh/id_github
