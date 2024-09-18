@@ -3,3 +3,5 @@
 	email = phillip@book.io
 [maintenance]
 	repo = /home/phillip/code/booktoken-web
+[init]
+	defaultBranch = main
