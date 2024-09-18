@@ -20,11 +20,13 @@ return {
 	{ import = "astrocommunity.color.headlines-nvim" },
 	{ import = "astrocommunity.editing-support.copilotchat-nvim" },
 	{ import = "astrocommunity.editing-support.cloak-nvim" },
+	{ import = "astrocommunity.editing-support.neogen" },
 	{ import = "astrocommunity.note-taking.neorg" },
 	{ import = "astrocommunity.recipes.neovide" },
 	{ import = "astrocommunity.fuzzy-finder.telescope-zoxide" },
 	{ import = "astrocommunity.scrolling.neoscroll-nvim" },
 	{ import = "astrocommunity.motion.nvim-surround" },
 	{ import = "astrocommunity.split-and-window.minimap-vim" },
+	{ import = "astrocommunity.recipes.vscode" },
 	-- import/override with your plugins folder
 }
