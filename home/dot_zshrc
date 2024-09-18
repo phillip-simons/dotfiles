@@ -54,6 +54,7 @@ bindkey '^n' history-search-forward
 bindkey '^[w' kill-region
 
 export EDITOR="nvim"
+export VISUAL="neovide"
 # History
 HISTSIZE=5000
 HISTFILE=~/.zsh_history
