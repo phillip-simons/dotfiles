@@ -26,6 +26,7 @@ return {
   { import = "astrocommunity.fuzzy-finder.telescope-zoxide" },
   { import = "astrocommunity.scrolling.neoscroll-nvim" },
   { import = "astrocommunity.motion.nvim-surround" },
+  { import = "astrocommunity.note-taking.neorg" },
   { import = "astrocommunity.split-and-window.neominimap-nvim" },
   { import = "astrocommunity.icon.mini-icons" },
   { import = "astrocommunity.recipes.vscode" },
