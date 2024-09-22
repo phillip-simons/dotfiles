@@ -23,6 +23,7 @@
         - multitail
         - wget
         - unzip
+        - emacs
         - fontconfig
         - ripgrep
         - btop
@@ -61,7 +62,7 @@
           when: yay_check.failed
 
         - name: Install dependencies using yay
-          command: yay --noconfirm -S base-devel bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd
+          command: yay --noconfirm -S base-devel bash bash-completion tar bat tree fastfetch wget unzip fontconfig neovim tmux zsh git btop ripgrep lsd emacs
           become: yes
 
       when: ansible_os_family == 'Archlinux'
