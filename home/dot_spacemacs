@@ -702,6 +702,11 @@ before packages are loaded."
   (setq org-startup-indented t
         org-pretty-entities t)
   (spacemacs|diminish wakatime-mode " ⓦ" " W")
+
+  ;; Speed up TRAMP connections by skipping certain checks
+  (setq tramp-default-method "ssh")
+  (setq tramp-ssh-controlmaster-options
+        "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
