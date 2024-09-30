@@ -17,7 +17,6 @@ alias cat='bat'
 alias emacs="emacsclient -c -a 'emacs'" # GUI versions of Emacs
 alias em="/usr/bin/emacs -nw" # Terminal version of Emacs
 alias vim="nvim"
-alias ssh="kitten ssh"
 
 alias viz='chezmoi edit .zshrc'
 alias vit='chezmoi edit ~/.config/tmux/tmux.conf'
@@ -40,3 +39,13 @@ alias .5='cd ../../../../..'
 alias c='clear'
 
 alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" # Kill Emacs and restart daemon..
+
+# Aliases under tmux
+if [ -n "$TMUX" ]; then
+  # Inside tmux
+  unalias ssh 2>/dev/null
+  alias td='tmux detach'
+else
+  # Outside tmux
+  alias ssh='kitten ssh'
+fi
