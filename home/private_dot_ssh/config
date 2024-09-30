@@ -11,7 +11,13 @@ Host pve1-network
 Host pve2-network
   HostName 192.168.2.202
 
-Host media-host pve1-network pve2-network
+Host personal-host
+  HostName 192.168.2.203
+
+Host manager
+  HostName 192.168.2.99
+
+Host media-host personal-host pve1-network pve2-network manager
   User phillip
   Port 22
   IdentityFile ~/.ssh/id_default
