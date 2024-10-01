@@ -46,7 +46,7 @@ This function should only modify configuration layer settings."
      docker
      emacs-lisp
      games
-     git
+     (git :variables git-enable-magit-todos-plugin t)
      github-copilot
      helm
      helpful
@@ -83,7 +83,7 @@ This function should only modify configuration layer settings."
      python
      (restclient :variables
                  restclient-use-org t)
-     rust
+     (rust :variables rust-format-on-save t)
      (shell :variables
             shell-default-term-shell "/usr/bin/zsh"
             shell-default-position 'bottom
@@ -122,7 +122,6 @@ This function should only modify configuration layer settings."
      (yaml :variables yaml-enable-lsp t)
 
      ;; custom layers
-     chezmoi
      )
 
 
@@ -850,11 +849,11 @@ before packages are loaded."
   (setq org-startup-indented t
         org-pretty-entities t)
   (spacemacs|diminish wakatime-mode " ⓦ" " W")
+  (spacemacs|diminish mixed-pitch-mode "" " ")
 
   (setq-default evil-kill-on-visual-paste nil)
-  (with-eval-after-load 'evil
-    (define-key evil-insert-state-map "vv" 'evil-paste-after))
-
+  (require 'git-commit)
+  (global-git-commit-mode t)
   ;; Speed up TRAMP connections by skipping certain checks
   (setq tramp-default-method "ssh")
   (setq tramp-ssh-controlmaster-options
