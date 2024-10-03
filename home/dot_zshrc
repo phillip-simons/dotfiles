@@ -78,15 +78,6 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls -a --color $realpath'
 # Shell integrations
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
-cdls() {
-        local dir="$1"
-        local dir="${dir:=$HOME}"
-        if [[ -d "$dir" ]]; then
-                cd "$dir" >/dev/null; lsd --color=auto
-        else
-                echo "bash: cdls: $dir: Directory not found"
-        fi
-}
 
 export PATH=”$HOME/.config/emacs/bin:$PATH”
 export PATH="$PATH:/home/phillip/.local/bin"
