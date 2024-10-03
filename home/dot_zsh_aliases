@@ -57,3 +57,13 @@ function fcd() {
     cd "$folder"
   fi
 }
+
+cdls() {
+        local dir="$1"
+        local dir="${dir:=$HOME}"
+        if [[ -d "$dir" ]]; then
+                cd "$dir" >/dev/null; lsd --color=auto
+        else
+                echo "bash: cdls: $dir: Directory not found"
+        fi
+}
