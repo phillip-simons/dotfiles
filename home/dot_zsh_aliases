@@ -49,3 +49,10 @@ else
   # Outside tmux
   alias ssh='kitten ssh'
 fi
+
+function fcd() {
+  local folder=$(fd --type d --max-depth 1 --exclude .git --exclude target | fzf)
+  if [[ -n "$folder" ]]; then
+    cd "$folder"
+  fi
+}
