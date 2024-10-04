@@ -51,7 +51,6 @@ This function should only modify configuration layer settings."
      games
      (git :variables git-enable-magit-todos-plugin t)
      github-copilot
-     gnus
      helm
      helpful
      html
@@ -78,10 +77,12 @@ This function should only modify configuration layer settings."
                                          "rust"
                                          ("elisp" "emacs-lisp")))
      multiple-cursors
+     mu4e
      nav-flash
      (org :variables
           org-enable-appear-support t
           org-enable-github-support t
+          org-enable-org-contacts-support t
           org-enable-sticky-header t)
      pass
      pdf
@@ -720,34 +721,59 @@ before packages are loaded."
   (setq org-agenda-skip-unavailable-files t)
   (setq org-capture-templates
         '(
-          ("j" "Work Log Entry"
-           entry (file+function "~/org/work-log.org" org-reverse-datetree-goto-date-in-file)
-           "* %?"
-           :empty-lines 0)
 
-          ("n" "Note"
-           entry (file+headline "~/org/notes.org" "General Notes")
+          ("n" "Notes")
+          ("np" "Personal Note"
+           entry (file+headline "~/org/10-19_Personal/12_Notes/12.11_notes.org" "General Notes")
            "** %?"
            :empty-lines 0)
 
-          ("g" "General To-Do"
-           entry (file+headline "~/org/todos.org" "General Tasks")
+          ("nw" "Work Note"
+           entry (file+headline "~/org/20-29_Work/27_Notes/27.11_notes.org" "General Notes")
+           "** %?"
+           :empty-lines 0)
+
+          ("t" "TODOs")
+          ("tp" "Personal To-Do"
+           entry (file+headline "~/org/10-19_Personal/10_System/10.03_todos.org" "General Tasks")
            "* TODO [#B] %?\n:Created: %T\n "
+           :empty-lines 0)
+          ("tw" "Work To-Do"
+           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "General Tasks")
+           "* TODO [#B] %?\n:Created: %T\n "
+           :empty-lines 0)
+          ("tc" "Code To-Do"
+           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "Code Related Tasks")
+           "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
            :empty-lines 0)
 
           ("m" "Meeting"
-           entry (file+function "~/org/meetings.org" org-reverse-datetree-goto-date-in-file)
+           entry (file+function "~/org/20-29_Work/24_Meetings/24.11_meetinglog.org" org-reverse-datetree-goto-date-in-file)
            "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
            :tree-type week
            :clock-in t
            :clock-resume t
            :empty-lines 0)
 
-          ("c" "Code To-Do"
-           entry (file+headline "~/org/todos.org" "Code Related Tasks")
-           "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
-           :empty-lines 0)
+          ("c" "Contacts" entry (file "~/org/00-09_System/01_Inbox/01.02_Contacts.org")
+           "* %(org-contacts-template-name)
+:PROPERTIES:
+:EMAIL: %(org-contacts-template-email)
+:PHONE:
+:ALIAS:
+:NICKNAME:
+:IGNORE:
+:ICON:
+:NOTE:
+:ADDRESS:
+:BIRTHDAY:
+:END:")
 
+          ("f" "Follow Up")
+          ("fp" "Personal Follow Up" entry (file+olp "~/org/10-19_Personal/10_System/10.03_todos.org" "Follow Up")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
+          ("fw" "Work Follow Up" entry (file+olp "~/org/20-29_Work/20_System/20.03_todos.org" "Follow Up")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
           ))
 
   (setq org-todo-keywords
@@ -782,7 +808,6 @@ before packages are loaded."
                         ("QA" . ?q)
                         ("backend" . ?k)
                         ("broken_code" . ?c)
-                        ("frontend" . ?f)
                         ("infrastructure" . ?i)
 
                         ;; Special tags
@@ -793,7 +818,7 @@ before packages are loaded."
                         ("general" . ?g)
                         ("meeting" . ?m)
                         ("misc" . ?z)
-                        ("planning" . ?l)
+                        ("planning" . ?n)
 
                         ;; Work Log Tags
                         ("accomplishment" . ?a)
@@ -801,32 +826,14 @@ before packages are loaded."
                         ;; Personal tags
                         ("hobby" . ?h)
                         ("personal" . ?p)
+
+                        ;; Organization
+                        (:startgroup . nil)
+                        ("directory" . ?d)
+                        ("file" . ?f)
+                        ("link" . ?n)
+                        (:endgroup . nil)
                         ))
-
-  (setq gnus-secondary-select-methods
-        '(
-          (nnimap "book"
-                  (nnimap-address
-                   "imap.gmail.com")
-                  (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          ))
-
-  ;; Send email via Gmail:
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-default-smtp-server "smtp.gmail.com")
-
-  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
-        gnus-message-archive-group "[Gmail]/Sent Mail")
-
-  ;; Set return email address based on incoming email address
-  (setq gnus-posting-styles
-        '(((header "to" "phillip@book.io")
-           (address "phillip@book.io"))))
-
-  (setq nnml-directory "~/email/book")
-  (setq message-directory "~/email/book")
-
 
   ;; Tag colors
   (setq org-tag-faces
@@ -882,11 +889,63 @@ before packages are loaded."
            ;; Don't compress things (change to suite your tastes)
            ((org-agenda-compact-blocks nil)))
           ))
-
+  (setq org-contacts-files '("~/org/00-09_System/01_Inbox/01.02_Contacts.org" "~/org/20-29_Work/23_People/23.11_Contacts.org" "~/org/10-19_Personal/17_People/17.11_Contacts.org"))
   (setq org-startup-indented t
         org-pretty-entities t)
   (spacemacs|diminish wakatime-mode " ⓦ" " W")
   (spacemacs|diminish mixed-pitch-mode "" " ")
+  (setq mu4e-maildir (expand-file-name "~/Maildir")
+        mu4e-get-mail-command "mbsync -a"
+        mu4e-update-interval 300 ;; Update every 5 minutes
+        mu4e-headers-auto-update t
+        mu4e-view-show-images t
+        mu4e-view-show-addresses t
+        mu4e-sent-messages-behavior 'delete
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-stream-type 'starttls
+        smtpmail-smtp-server "smtp.gmail.com"
+        smtpmail-smtp-service 587
+        smtpmail-auth-credentials "~/.authinfo.gpg"
+        smtpmail-debug-info t)
+
+  ;; Contexts (if you have multiple email accounts)
+  (setq mu4e-contexts
+        (list
+         ;; Work account
+         (make-mu4e-context
+          :name "work"
+          :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "phillip@book.io")
+                  (user-full-name    . "Phillip Simons")
+                  (mu4e-drafts-folder  . "/work/[Gmail]/Drafts")
+                  (mu4e-sent-folder  . "/work/[Gmail]/Sent")
+                  (mu4e-refile-folder  . "/work/[Gmail]/All Mail")
+                  (mu4e-trash-folder  . "/work/[Gmail]/Trash")))
+
+         ;; Personal account
+         (make-mu4e-context
+          :name "personal"
+          :match-func
+          (lambda (msg)
+            (when msg
+              (string-prefix-p "/personal" (mu4e-message-field msg :maildir))))
+          :vars '((user-mail-address . "phillip@simons.gg")
+                  (user-full-name    . "Phillip Simons")
+                  (mu4e-drafts-folder  . "/personal/[Gmail]/Drafts")
+                  (mu4e-sent-folder  . "/personal/[Gmail]/Sent")
+                  (mu4e-refile-folder  . "/personal/[Gmail]/All Mail")
+                  (mu4e-trash-folder  . "/personal/[Gmail]/Trash")))))
+
+  ;; Make sure mu4e uses the correct sendmail program
+  (setq sendmail-program "/usr/bin/msmtp"
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function 'message-send-mail-with-sendmail)
+  (add-to-list 'mu4e-bookmarks '("m:/personal/Inbox or m:/work/Inbox" "All Inboxes" ?i))
+  (setq mu4e-search-skip-duplicates t)
 
   (setq-default evil-kill-on-visual-paste nil)
   (require 'git-commit)
@@ -899,6 +958,18 @@ before packages are loaded."
   (with-eval-after-load 'igist
     (spacemacs/set-leader-keys
       "gg" 'igist-dispatch))
+  (setq org-refile-use-outline-path t)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  ;; Function to match second-level headings under "* Projects"
+  (defun my/org-projects-refile-target ()
+    (save-excursion
+      (org-back-to-heading t)
+      (when (looking-at "^\\* Projects")
+        (org-map-entries (lambda () (point)) nil 'tree))))
+
+  (setq org-refile-targets
+        '((nil :maxlevel . 1) ;; Top-level headings globally
+          (my/org-projects-refile-target :level . 2))) ;; Second-level under "* Projects"
 
   )
 
@@ -916,6 +987,7 @@ This function is called at the very end of Spacemacs initialization."
    ;; If there is more than one, they won't work right.
    '(org-modules
      '(ol-bbdb ol-bibtex org-crypt ol-docview ol-doi ol-eww ol-gnus org-habit ol-info ol-irc ol-mhe org-protocol ol-rmail ol-w3m))
+   '(org-refile-targets '((nil :maxlevel . 2)))
    '(package-selected-packages
      '(igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
   (custom-set-faces
