@@ -18,6 +18,7 @@ alias cat='bat'
 alias emacs="emacsclient -c -a 'emacs'" # GUI versions of Emacs
 alias em="/usr/bin/emacs -nw" # Terminal version of Emacs
 alias vim="nvim"
+alias vi="vim"
 
 alias viz='chezmoi edit .zshrc'
 alias vit='chezmoi edit ~/.config/tmux/tmux.conf'
