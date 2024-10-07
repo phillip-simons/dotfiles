@@ -902,6 +902,7 @@ before packages are loaded."
         mu4e-view-show-addresses t
         mu4e-sent-messages-behavior 'delete
         message-send-mail-function 'smtpmail-send-it
+        mail-host-address "simons.gg"
         smtpmail-stream-type 'starttls
         smtpmail-smtp-server "smtp.gmail.com"
         smtpmail-smtp-service 587
