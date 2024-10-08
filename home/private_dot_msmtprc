@@ -1,0 +1,24 @@
+defaults
+tls on
+tls_starttls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+# Work Gmail account
+account work
+host smtp.gmail.com
+port 587
+auth on
+user phillip@book.io
+passwordeval "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine smtp.gmail.com login phillip@book.io' | awk '{print $6}'"
+from phillip@book.io
+
+# Personal Gmail account
+account personal
+host smtp.gmail.com
+port 587
+auth on
+user phillip@simons.gg
+passwordeval "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine smtp.gmail.com login phillip@simons.gg' | awk '{print $6}'"
+from phillip@simons.gg
+
+account default: personal
