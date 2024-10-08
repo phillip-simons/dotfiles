@@ -82,3 +82,6 @@ eval "$(zoxide init --cmd cd zsh)"
 export PATH=”$HOME/.config/emacs/bin:$PATH”
 export PATH="$PATH:/home/phillip/.local/bin"
 export PATH="$PATH:/home/phillip/bin"
+autoload bashcompinit
+bashcompinit
+source "/home/phillip/.local/share/bash-completion/completions/am"
