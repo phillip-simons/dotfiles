@@ -77,7 +77,9 @@ This function should only modify configuration layer settings."
                                          "rust"
                                          ("elisp" "emacs-lisp")))
      multiple-cursors
-     mu4e
+     (mu4e :variables
+           mu4e-org-compose-support t
+           mu4e-autorun-background-at-startup t)
      nav-flash
      (org :variables
           org-enable-appear-support t
@@ -94,7 +96,7 @@ This function should only modify configuration layer settings."
             shell-default-term-shell "/usr/bin/zsh"
             shell-default-position 'bottom
             shell-default-height 30
-            shell-default-shell 'eat)
+            shell-default-shell 'vterm)
      (shell-scripts :variables
                     shell-scripts-backend 'lsp
                     shell-scripts-format-on-save t)
@@ -901,6 +903,8 @@ before packages are loaded."
         mu4e-view-show-images t
         mu4e-view-show-addresses t
         mu4e-sent-messages-behavior 'delete
+        mu4e-compose-in-new-frame t
+        mu4e-context-policy 'ask
         message-send-mail-function 'smtpmail-send-it
         mail-host-address "simons.gg"
         smtpmail-stream-type 'starttls
@@ -922,7 +926,7 @@ before packages are loaded."
           :vars '((user-mail-address . "phillip@book.io")
                   (user-full-name    . "Phillip Simons")
                   (mu4e-drafts-folder  . "/work/[Gmail]/Drafts")
-                  (mu4e-sent-folder  . "/work/[Gmail]/Sent")
+                  (mu4e-sent-folder  . "/work/[Gmail]/Sent Mail")
                   (mu4e-refile-folder  . "/work/[Gmail]/All Mail")
                   (mu4e-trash-folder  . "/work/[Gmail]/Trash")))
 
@@ -936,7 +940,7 @@ before packages are loaded."
           :vars '((user-mail-address . "phillip@simons.gg")
                   (user-full-name    . "Phillip Simons")
                   (mu4e-drafts-folder  . "/personal/[Gmail]/Drafts")
-                  (mu4e-sent-folder  . "/personal/[Gmail]/Sent")
+                  (mu4e-sent-folder  . "/personal/[Gmail]/Sent Mail")
                   (mu4e-refile-folder  . "/personal/[Gmail]/All Mail")
                   (mu4e-trash-folder  . "/personal/[Gmail]/Trash")))))
 
