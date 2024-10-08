@@ -1,0 +1,52 @@
+IMAPAccount work
+Host imap.gmail.com
+User phillip@book.io
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine imap.gmail.com login phillip@book.io' | awk '{print $6}'"
+SSLType IMAPS
+SSLVersions TLSv1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore work-remote
+Account work
+
+MaildirStore work-local
+Path ~/Maildir/work/
+Inbox ~/Maildir/work/Inbox
+SubFolders Verbatim
+
+Channel work
+Far :work-remote:
+Near :work-local:
+Patterns * !"[Gmail]/Spam" 
+Create Both
+Expunge Both
+SyncState *
+
+IMAPAccount personal
+Host imap.gmail.com
+User phillip@simons.gg
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine imap.gmail.com login phillip@simons.gg' | awk '{print $6}'"
+SSLType IMAPS
+SSLVersions TLSv1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore personal-remote
+Account personal
+
+MaildirStore personal-local
+Path ~/Maildir/personal/         # Change the path for the second account
+Inbox ~/Maildir/personal/Inbox   # Change the inbox path for the second account
+SubFolders Verbatim
+
+Channel personal
+Far :personal-remote:
+Near :personal-local:
+Patterns * !"[Gmail]/Spam" 
+Create Both
+Expunge Both
+SyncState *
+
+# Group for Both Email Accounts
+Group myemail
+Channel work
+Channel personal
