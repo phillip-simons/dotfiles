@@ -69,3 +69,7 @@ cdls() {
                 echo "bash: cdls: $dir: Directory not found"
         fi
 }
+
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}
