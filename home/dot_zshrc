@@ -46,9 +46,17 @@ zinit cdreplay -q
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-source ~/.zsh_aliases
-source ~/.zshdev
+if [-f "$HOME"/.zsh_aliases ]; then
+    \. "$HOME"/.zsh_aliases
+fi
 
+if [-f "$HOME"/.zsh_functions ]; then
+    \. "$HOME"/.zsh_functions
+fi
+
+if [-f "$HOME"/.zshdev ]; then
+    \. "$HOME"/.zshdev
+fi
 # Keybindings
 bindkey -e
 bindkey '^p' history-search-backward
