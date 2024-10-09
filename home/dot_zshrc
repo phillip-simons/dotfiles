@@ -6,7 +6,7 @@ fi
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 
 
-export ZSH_COMPDUMP=$ZDOTDIR/cache/.zcompdump-$HOST
+export ZSH_COMPDUMP=$HOME/.cache/.zcompdump-$HOST
 
 # Download Zinit, if it's not there yet
 if [ ! -d "$ZINIT_HOME" ]; then
@@ -46,15 +46,15 @@ zinit cdreplay -q
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-if [-f "$HOME"/.zsh_aliases ]; then
+if [ -f "$HOME"/.zsh_aliases ]; then
     \. "$HOME"/.zsh_aliases
 fi
 
-if [-f "$HOME"/.zsh_functions ]; then
+if [ -f "$HOME"/.zsh_functions ]; then
     \. "$HOME"/.zsh_functions
 fi
 
-if [-f "$HOME"/.zshdev ]; then
+if [ -f "$HOME"/.zshdev ]; then
     \. "$HOME"/.zshdev
 fi
 # Keybindings
@@ -105,6 +105,6 @@ fzf_compgen_dir() {
     fd --exclude ".git" --follow --hidden --type d . "$1"
 }
 
-export FZF_ALT_C_COMMAND=fd --type d --exclude .git --follow --hidden
+export FZF_ALT_C_COMMAND=fd --type d --exclude .git --exclude target --follow --hidden
 export FZF_DEFAULT_COMMAND=fd --type f --exclude .git --follow --hidden
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
