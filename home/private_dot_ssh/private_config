@@ -26,6 +26,7 @@ Host media-host personal-host pve1-network pve2-network manager
   AddKeysToAgent yes
   ControlMaster auto
   ControlPath ~/.ssh/controlmasters/%r@%h:%p
+  ControlPersist 5
 
 Host github.com
   User git
