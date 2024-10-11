@@ -77,10 +77,6 @@ This function should only modify configuration layer settings."
                                          "rust"
                                          ("elisp" "emacs-lisp")))
      multiple-cursors
-     (mu4e :variables
-           mu4e-enable-mode-line t
-           mu4e-enable-notifications t
-           mu4e-autorun-background-at-startup t)
      nav-flash
      (org :variables
           org-enable-appear-support t
@@ -149,8 +145,10 @@ This function should only modify configuration layer settings."
    '(
      dash
      dash-functional
+     helm-mu
      igist
      mixed-pitch
+     mu4easy
      org-starter
      org-reverse-datetree
      org-msg
@@ -705,7 +703,6 @@ before packages are loaded."
   (setq dired-dwim-target t)
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
-  (diredfl-global-mode 1)
 
 
   (dolist (e '("service" "timer" "target" "mount" "automount"
@@ -917,79 +914,6 @@ before packages are loaded."
   (spacemacs|diminish wakatime-mode " ⓦ" " W")
   (spacemacs|diminish mixed-pitch-mode "" " ")
   (setq mail-user-agent 'mu4e-user-agent)
-  (setq mu4e-maildir (expand-file-name "~/Maildir")
-        mu4e-get-mail-command "mbsync -aq"
-        mu4e-update-interval 300 ;; Update every 5 minutes
-        mu4e-headers-auto-update t
-        mu4e-view-show-images t
-        mu4e-view-show-addresses t
-        mu4e-sent-messages-behavior 'delete
-        mu4e-compose-in-new-frame t
-        mu4e-context-policy 'ask
-        mail-host-address "simons.gg")
-
-  (require 'mu4e-contrib)
-  (setq mu4e-html2text-command 'mu4e-shr2text)
-  ;; (add-hook 'mu4e-view-mode-hook
-  ;;           (lambda()
-  ;;             (local-set-key (kbd "<tab>") 'shr-next-link)
-  ;;             (local-set-key (kbd "<backtab>") 'shr-previous-link)))
-  ;; Contexts (if you have multiple email accounts)
-  (setq mu4e-contexts
-        (list
-         ;; Work account
-         (make-mu4e-context
-          :name "work"
-          :match-func
-          (lambda (msg)
-            (when msg
-              (string-prefix-p "/work" (mu4e-message-field msg :maildir))))
-          :vars '((user-mail-address . "phillip@book.io")
-                  (user-full-name    . "Phillip Simons")
-                  (mu4e-drafts-folder  . "/work/[Gmail]/Drafts")
-                  (mu4e-sent-folder  . "/work/[Gmail]/Sent Mail")
-                  (mu4e-refile-folder  . "/work/[Gmail]/All Mail")
-                  (mu4e-trash-folder  . "/work/[Gmail]/Trash")))
-
-         ;; Personal account
-         (make-mu4e-context
-          :name "personal"
-          :match-func
-          (lambda (msg)
-            (when msg
-              (string-prefix-p "/personal" (mu4e-message-field msg :maildir))))
-          :vars '((user-mail-address . "phillip@simons.gg")
-                  (user-full-name    . "Phillip Simons")
-                  (mu4e-drafts-folder  . "/personal/[Gmail]/Drafts")
-                  (mu4e-sent-folder  . "/personal/[Gmail]/Sent Mail")
-                  (mu4e-refile-folder  . "/personal/[Gmail]/All Mail")
-                  (mu4e-trash-folder  . "/personal/[Gmail]/Trash")))))
-
-  (with-eval-after-load 'mu4e-alert
-    ;; Enable Desktop notifications
-    (mu4e-alert-set-default-style 'notifications)) ; For Linux.
-
-  ;; Make sure mu4e uses the correct sendmail program
-  (setq sendmail-program "/usr/bin/msmtp"
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from")
-        message-send-mail-function 'message-send-mail-with-sendmail)
-  (add-to-list 'mu4e-bookmarks '("m:/personal/Inbox or m:/work/Inbox" "All Inboxes" ?i))
-  (setq mu4e-search-skip-duplicates t)
-
-  (require 'org-msg)
-  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil"
-        org-msg-startup "indent inlineimages"
-        org-msg-greeting-fmt "\nHowdy%s,\n\n"
-        org-msg-greeting-name-limit 3
-        org-msg-signature "
-Best,
-
-#+begin_signature
-Phillip Simons \\\\
-(214) 842-0054
-#+end_signature")
-  (org-msg-mode)
 
   (setq-default evil-kill-on-visual-paste nil)
   (require 'git-commit)
@@ -999,8 +923,11 @@ Phillip Simons \\\\
   (setq tramp-ssh-controlmaster-options
         "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
   (setq igist-auth-marker 'forge)
-  (spacemacs/set-leader-keys
-    "gg" 'igist-dispatch)
+  (use-package igist
+    :init
+    (spacemacs/set-leader-keys
+      "gg" 'igist-dispatch)
+    :ensure t)
   (setq org-refile-use-outline-path t)
   (setq org-refile-allow-creating-parent-nodes 'confirm)
   ;; Function to match second-level headings under "* Projects"
@@ -1014,6 +941,94 @@ Phillip Simons \\\\
         '((nil :maxlevel . 1) ;; Top-level headings globally
           (my/org-projects-refile-target :level . 2))) ;; Second-level under "* Projects"
 
+  (setq mu4easy-contexts '((mu4easy-context
+                            :c-name  "Personal"
+                            :name    "Phillip Simons"
+                            :maildir "GmailPersonal"
+                            :mail    "phillip@simons.gg"
+                            :smtp    "smtp.gmail.com"
+                            :sent-action delete
+                            :sig "
+
+Best,
+
+#+begin_signature
+--
+Phillip Simons
+📧 [[mailto:phillip@simons.gg][phillip@simons.gg]]
+📞 +1 (214) 842-0054
+#+end_signature")
+                           (mu4easy-context
+                            :c-name  "Work"
+                            :name    "Phillip Simons"
+                            :maildir "GmailWork"
+                            :mail    "phillip@book.io"
+                            :smtp    "smtp.gmail.com"
+                            :sent-action delete
+                            :sig "
+
+Best,
+
+#+begin_signature
+--
+*Phillip Simons*
+Book.io | Stuff.io
+📧 [[mailto:phillip@book.io][phillip@book.io]]
+📞 +1 (214) 842-0054
+#+end_signature")
+                           ))
+  (use-package mu4easy
+    :init (spacemacs/set-leader-keys "aem" 'mu4e)
+    :ensure t
+    :config
+    (evilified-state-evilify-map mu4e-main-mode-map
+      :mode mu4e-main-mode
+      :bindings
+      (kbd "j") 'mu4e-search-maildir
+      (kbd "C-j") 'next-line
+      (kbd "C-k") 'previous-line)
+
+    (evilified-state-evilify-map
+      mu4e-headers-mode-map
+      :mode mu4e-headers-mode
+      :bindings
+      (kbd "C-j") 'mu4e-headers-next
+      (kbd "C-k") 'mu4e-headers-prev
+      (kbd "J") (lambda ()
+                  (interactive)
+                  (mu4e-headers-mark-thread nil '(read))))
+
+    (evilified-state-evilify-map
+      mu4e-view-mode-map
+      :mode mu4e-view-mode
+      :bindings
+      (kbd "C-j") 'mu4e-view-headers-next
+      (kbd "C-k") 'mu4e-view-headers-prev
+      (kbd "J") (lambda ()
+                  (interactive)
+                  (mu4e-view-mark-thread '(read)))
+      (kbd "gu") 'mu4e-view-go-to-url)
+
+    (spacemacs/set-leader-keys-for-major-mode 'org-msg-edit-mode
+      dotspacemacs-major-mode-leader-key 'org-ctrl-c-ctrl-c
+      "c" 'org-ctrl-c-ctrl-c
+      "k" 'message-kill-buffer
+      "a" 'org-msg-attach
+      "s" 'message-goto-subject
+      "b" 'org-msg-goto-body
+      "e" 'org-msg-preview
+      "d" 'message-dont-send)
+    (setq mu4easy-greeting "Howdy%s,\n\n")
+    (mu4easy-mode)
+    )
+
+  (use-package helm-mu
+    :defer t
+    :init (dolist (m mu4e-modes)
+            (spacemacs/set-leader-keys-for-major-mode m
+              "S" 'helm-mu
+              "/" 'helm-mu
+              "C" 'helm-mu-contacts)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -1033,7 +1048,7 @@ This function is called at the very end of Spacemacs initialization."
    '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
    '(org-refile-targets '((nil :maxlevel . 2)))
    '(package-selected-packages
-     '(org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+     '(helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint helm-ag google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
