@@ -1,52 +1,127 @@
-IMAPAccount work
-Host imap.gmail.com
-User phillip@book.io
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine imap.gmail.com login phillip@book.io' | awk '{print $6}'"
-SSLType IMAPS
-SSLVersions TLSv1.2
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-IMAPStore work-remote
-Account work
-
-MaildirStore work-local
-Path ~/Maildir/work/
-Inbox ~/Maildir/work/Inbox
-SubFolders Verbatim
-
-Channel work
-Far :work-remote:
-Near :work-local:
-Patterns * !"[Gmail]/Spam" 
-Create Both
-Expunge Both
-SyncState *
-
 IMAPAccount personal
 Host imap.gmail.com
 User phillip@simons.gg
-PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | grep 'machine imap.gmail.com login phillip@simons.gg' | awk '{print $6}'"
-SSLType IMAPS
-SSLVersions TLSv1.2
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine imap.gmail.com login phillip@simons.gg/ {print $NF}'"
+AuthMechs LOGIN
+TLSType IMAPS
+TLSVersions +1.2
 CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore personal-local
+Path ~/Maildir/GmailPersonal/
+Inbox ~/Maildir/GmailPersonal/Inbox
+SubFolders Verbatim
 
 IMAPStore personal-remote
 Account personal
 
-MaildirStore personal-local
-Path ~/Maildir/personal/         # Change the path for the second account
-Inbox ~/Maildir/personal/Inbox   # Change the inbox path for the second account
-SubFolders Verbatim
-
-Channel personal
-Far :personal-remote:
-Near :personal-local:
-Patterns * !"[Gmail]/Spam" 
+Channel personal-inbox
+Far :personal-remote:"INBOX"
+Near :personal-local:"INBOX"
+CopyArrivalDate yes
 Create Both
 Expunge Both
 SyncState *
 
-# Group for Both Email Accounts
-Group myemail
-Channel work
-Channel personal
+Channel personal-trash
+Far :personal-remote:"[Gmail]/Trash"
+Near :personal-local:"Trash"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel personal-spam
+Far :personal-remote:"[Gmail]/Spam"
+Near :personal-local:"Spam"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel personal-all
+Far :personal-remote:"[Gmail]/All Mail"
+Near :personal-local:"Archive"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel personal-drafts
+Far :personal-remote:"[Gmail]/Drafts"
+Near :personal-local:"Drafts"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Group personal
+Channel personal-inbox
+Channel personal-trash
+Channel personal-all
+Channel personal-spam
+Channel personal-drafts
+
+IMAPAccount work
+Host imap.gmail.com
+User phillip@book.io
+PassCmd "gpg -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine imap.gmail.com login phillip@book.io/ {print $NF}'"
+AuthMechs LOGIN
+TLSType IMAPS
+TLSVersions +1.2
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+MaildirStore work-local
+Path ~/Maildir/GmailWork/
+Inbox ~/Maildir/GmailWork/Inbox
+SubFolders Verbatim
+
+IMAPStore work-remote
+Account work
+
+Channel work-inbox
+Far :work-remote:"INBOX"
+Near :work-local:"INBOX"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel work-trash
+Far :work-remote:"[Gmail]/Trash"
+Near :work-local:"Trash"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel work-spam
+Far :work-remote:"[Gmail]/Spam"
+Near :work-local:"Spam"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel work-all
+Far :work-remote:"[Gmail]/All Mail"
+Near :work-local:"Archive"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Channel work-drafts
+Far :work-remote:"[Gmail]/Drafts"
+Near :work-local:"Drafts"
+CopyArrivalDate yes
+Create Both
+Expunge Both
+SyncState *
+
+Group work
+Channel work-inbox
+Channel work-trash
+Channel work-all
+Channel work-spam
+Channel work-drafts
