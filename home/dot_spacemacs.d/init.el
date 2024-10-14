@@ -78,6 +78,7 @@ This function should only modify configuration layer settings."
                                          ("elisp" "emacs-lisp")))
      multiple-cursors
      nav-flash
+     nixos
      (org :variables
           org-enable-appear-support t
           org-enable-github-support t
