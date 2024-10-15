@@ -10,6 +10,5 @@ export PATH="$HOME/.config/emacs/bin:$PATH"
 export PATH="$HOME/perl5/bin:$PATH"
 
 typeset -U path
-PATH=($^PATH(N-/))
 
 export PATH
