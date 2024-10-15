@@ -797,20 +797,21 @@ before packages are loaded."
           ))
 
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "PAUSED(a!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
+        '((sequence "TODO(t)" "WAITING(w!)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "PAUSED(a!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
           ))
 
   (setq org-todo-keyword-faces
         '(
-          ("TODO" . (:foreground "GoldenRod" :weight bold))
-          ("PLANNING" . (:foreground "DeepPink" :weight bold))
-          ("IN-PROGRESS" . (:foreground "Cyan" :weight bold))
-          ("PAUSED" . (:foreground "gray" :weight bold))
-          ("VERIFYING" . (:foreground "DarkOrange" :weight bold))
-          ("BLOCKED" . (:foreground "Red" :weight bold))
-          ("DONE" . (:foreground "LimeGreen" :weight bold))
-          ("OBE" . (:foreground "LimeGreen" :weight bold))
-          ("WONT-DO" . (:foreground "LimeGreen" :weight bold))
+          ("TODO"        . (:foreground "GoldenRod"  :weight bold))
+          ("WAITING"     . (:foreground "yellow1"    :weight bold))
+          ("PLANNING"    . (:foreground "DeepPink"   :weight bold))
+          ("IN-PROGRESS" . (:foreground "Cyan"       :weight bold))
+          ("PAUSED"      . (:foreground "gray"       :weight bold))
+          ("VERIFYING"   . (:foreground "DarkOrange" :weight bold))
+          ("BLOCKED"     . (:foreground "Red"        :weight bold))
+          ("DONE"        . (:foreground "LimeGreen"  :weight bold))
+          ("OBE"         . (:foreground "LimeGreen"  :weight bold))
+          ("WONT-DO"     . (:foreground "LimeGreen"  :weight bold))
           ))
 
 
@@ -1025,11 +1026,16 @@ Book.io | Stuff.io
 
   (use-package helm-mu
     :defer t
-    :init (dolist (m mu4e-modes)
-            (spacemacs/set-leader-keys-for-major-mode m
-              "S" 'helm-mu
-              "/" 'helm-mu
-              "C" 'helm-mu-contacts)))
+    :config
+    (setq helm-mu-contacts-personal t)
+    :init
+    (let ((mu4e-modes (append '(mu4e-main-mode mu4e-headers-mode)
+                              '(mu4e-view-mode mu4e-compose-mode mu4e-loading-mode))))
+      (dolist (m mu4e-modes)
+        (spacemacs/set-leader-keys-for-major-mode m
+          "S" 'helm-mu
+          "/" 'helm-mu
+          "C" 'helm-mu-contacts))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
