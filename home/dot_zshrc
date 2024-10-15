@@ -1,5 +1,39 @@
 export ZSH_COMPDUMP=$HOME/.cache/.zcompdump-$HOST
 
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+	mkdir -p "$(dirname $ZINIT_HOME)"
+	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+
+# Add in zsh plugins
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+zinit light chisui/zsh-nix-shell
+zinit light nix-community/nix-zsh-completions
+zinit light MichaelAquilina/zsh-you-should-use
+# Add in snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::archlinux
+zinit snippet OMZP::aws
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::kubectx
+zinit snippet OMZP::command-not-found
+
+# Load completions
+autoload -Uz compinit && compinit
+
+zinit cdreplay -q
+
 # Source all non-hidden .zsh files from ~/.config/zsh
 for file in ~/.config/zsh/**/*.zsh(N); do
     [[ -r "$file" && "$file" != */.* ]] && source "$file"
@@ -15,3 +49,4 @@ source "/home/phillip/.local/share/bash-completion/completions/am"
 eval "$(fzf --zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(direnv hook zsh)"
+eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/powerlevel10k_rainbow.omp.json)"
