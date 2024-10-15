@@ -21,7 +21,7 @@ disable = ["poetry", "gcloud", "lensfun", "pnpm"]
 # ignore_failures = ["powershell"]
 
 # List of remote machines with Topgrade installed on them
- remote_topgrades = ["pve1-network", "pve1-network", "media-host"]
+# remote_topgrades = ["pve1-network", "pve1-network", "media-host"]
 
 # Path to Topgrade executable on remote machines
 remote_topgrade_path = ".cargo/bin/topgrade"
@@ -45,13 +45,13 @@ remote_topgrade_path = ".cargo/bin/topgrade"
 # no_retry = true
 
 # Run inside tmux (default: false)
-run_in_tmux = true
+# run_in_tmux = true
 
 # Changes the way topgrade interacts with
 # the tmux session, creating the session
 # and only attaching to it if not inside tmux
 # (default: "attach_if_not_in_session", allowed values: "attach_if_not_in_session", "attach_always")
-tmux_session_mode = "attach_if_not_in_session"
+# tmux_session_mode = "attach_if_not_in_session"
 
 # Cleanup temporary or old files (default: false)
 # cleanup = true
@@ -73,7 +73,7 @@ tmux_session_mode = "attach_if_not_in_session"
 # this will be ignored if the binary is built without self update support
 #
 # available also via setting the environment variable TOPGRADE_NO_SELF_UPGRADE)
-# no_self_update = true
+no_self_update = true
 
 # Extra tracing filter directives
 # These are prepended to the `--log-filter` argument
