@@ -99,7 +99,10 @@ function mkcd() {
         return 0
     fi
 
-    mkdir -p -- "$@" && cd -P -- "$_" || exit;
+    mkdir -p -- "$@" && builtin cd -P -- "$_" || {
+        echo "Failed to create or change directory."
+        return 1
+    };
 }
 
 # Repeats a command a set number of times.
