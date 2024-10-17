@@ -101,7 +101,7 @@ alias fman='compgen -c | fzf | xargs man'   # man page finder
 # Aliases for text editors.
 alias cat='bat'                         # use bat instead of cat for syntax highlighting
 alias emacs="emacsclient -c -a 'emacs'" # GUI version of Emacs
-alias em="/usr/bin/emacs -nw"           # Terminal version of Emacs
+alias em="emacsclient -t -a 'emacs -nw'"           # Terminal version of Emacs
 alias vim="nvim"                        # use nvim instead of vim
 alias vi="\vim"                         # alias for vi
 
