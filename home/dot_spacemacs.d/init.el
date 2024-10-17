@@ -42,7 +42,6 @@ This function should only modify configuration layer settings."
      (auto-completion :variables
                       auto-completion-complete-with-key-sequence nil
                       auto-completion-complete-with-key-sequence-delay 0.1
-                      auto-completion-enable-help-tooltip t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-enable-sort-by-usage t
                       auto-completion-idle-delay 0.2
@@ -56,6 +55,7 @@ This function should only modify configuration layer settings."
      bibtex
      (colors :variables
              colors-colorize-identifiers 'variables)
+     csv
      dap
      django
      (docker :variables
@@ -117,6 +117,9 @@ This function should only modify configuration layer settings."
      pass
      pdf
      python
+     (ranger :variables
+             ranger-override-dired 'deer
+             ranger-show-preview t)
      (restclient :variables
                  restclient-use-org t)
      (rust :variables rust-format-on-save t)
@@ -1091,6 +1094,12 @@ Book.io | Stuff.io
   (require 'org-auto-tangle)
 
   (add-hook 'org-mode-hook 'org-auto-tangle-mode)
+
+  (setq helm-org-rifle-org-files
+        (seq-filter (lambda (file)
+                      (not (or (string-match-p "20.06_Calender.org" file)
+                               (string-match-p "10.06_Calender.org" file))))
+                    (helm-org-rifle-get-org-files)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -1100,31 +1109,32 @@ Book.io | Stuff.io
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(org-modules
-     '(ol-bbdb ol-bibtex org-crypt ol-docview ol-doi ol-eww ol-gnus org-habit ol-info ol-irc ol-mhe org-protocol ol-rmail ol-w3m))
-   '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
-   '(org-refile-targets '((nil :maxlevel . 2)))
-   '(package-selected-packages
-     '(company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(default ((t (:background nil))))
-   '(fixed-pitch ((t (:family "JetBrains Mono Nerd Font"))))
-   '(org-level-1 ((t (:inherit (outline-1 variable-pitch) :extend nil))))
-   '(org-level-2 ((t (:inherit (outline-2 variable-pitch) :extend nil))))
-   '(org-level-3 ((t (:inherit (outline-3 variable-pitch) :extend nil))))
-   '(org-level-4 ((t (:inherit (outline-4 variable-pitch) :extend nil))))
-   '(org-level-5 ((t (:inherit (outline-5 variable-pitch) :extend nil))))
-   '(org-level-6 ((t (:inherit (outline-6 variable-pitch) :extend nil))))
-   '(org-level-7 ((t (:inherit (outline-7 variable-pitch) :extend nil))))
-   '(org-level-8 ((t (:inherit (outline-8 variable-pitch) :extend nil))))
-   '(variable-pitch ((t (:weight regular :family "Inter")))))
-  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ignored-local-variable-values '((time-stamp-active . t)))
+ '(org-modules
+   '(ol-bbdb ol-bibtex org-crypt ol-docview ol-doi ol-eww ol-gnus org-habit ol-info ol-irc ol-mhe org-protocol ol-rmail ol-w3m))
+ '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
+ '(org-refile-targets '((nil :maxlevel . 2)))
+ '(package-selected-packages
+   '(csv-mode ranger company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:background nil))))
+ '(fixed-pitch ((t (:family "JetBrains Mono Nerd Font"))))
+ '(org-level-1 ((t (:inherit (outline-1 variable-pitch) :extend nil))))
+ '(org-level-2 ((t (:inherit (outline-2 variable-pitch) :extend nil))))
+ '(org-level-3 ((t (:inherit (outline-3 variable-pitch) :extend nil))))
+ '(org-level-4 ((t (:inherit (outline-4 variable-pitch) :extend nil))))
+ '(org-level-5 ((t (:inherit (outline-5 variable-pitch) :extend nil))))
+ '(org-level-6 ((t (:inherit (outline-6 variable-pitch) :extend nil))))
+ '(org-level-7 ((t (:inherit (outline-7 variable-pitch) :extend nil))))
+ '(org-level-8 ((t (:inherit (outline-8 variable-pitch) :extend nil))))
+ '(variable-pitch ((t (:weight regular :family "Inter")))))
+)
