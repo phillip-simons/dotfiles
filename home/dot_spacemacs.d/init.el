@@ -40,29 +40,55 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      ansible
      (auto-completion :variables
-                      auto-completion-enable-snippets-in-popup t)
+                      auto-completion-complete-with-key-sequence nil
+                      auto-completion-complete-with-key-sequence-delay 0.1
+                      auto-completion-enable-help-tooltip t
+                      auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-sort-by-usage t
+                      auto-completion-idle-delay 0.2
+                      auto-completion-minimum-prefix-length 1
+                      auto-completion-private-snippets-directory nil
+                      auto-completion-return-key-behavior nil
+                      auto-completion-tab-key-behavior 'complete
+                      auto-completion-use-company-box t)
+     (better-defaults :variables
+                      better-defaults-move-to-end-of-code-first t)
      bibtex
-     colors
+     (colors :variables
+             colors-colorize-identifiers 'variables)
      dap
      django
-     docker
+     (docker :variables
+             docker-dockerfile-backend 'lsp)
      emacs-lisp
      erc
      games
-     (git :variables git-enable-magit-todos-plugin t)
+     (git :variables
+          git-enable-magit-todos-plugin t
+          spacemacs--git-blame-ts-full-hint-toggle t)
      github-copilot
      helm
      helpful
-     html
+     (html :variables
+           css-enable-lsp t
+           less-enable-lsp t
+           scss-enable-lsp t
+           html-enable-lsp t)
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
      javascript
-     json
+     (json :variables
+           json-backend 'lsp
+           json-fmt-tool 'prettier
+           json-fmt-on-save t)
      kubernetes
      (latex :variables
             latex-build-command "xelatex"
             latex-enable-auto-fill t
             latex-enable-folding t
-            latex-enable-magic t)
+            latex-enable-magic t
+            latex-backend 'lsp
+            latex-refesh-preview t
+            latex-view-pdf-in-split-window t)
      finance
      (llm-client :variables
                  llm-client-enable-ellama t
@@ -81,6 +107,7 @@ This function should only modify configuration layer settings."
      nixos
      (org :variables
           org-enable-appear-support t
+          org-appear-trigger 'manual
           org-enable-github-support t
           org-enable-notifications t
           org-start-notification-daemon-on-startup t
@@ -101,8 +128,15 @@ This function should only modify configuration layer settings."
      (shell-scripts :variables
                     shell-scripts-backend 'lsp
                     shell-scripts-format-on-save t)
-     spell-checking
-     sql
+     (spell-checking :variables
+                     enable-flyspell-auto-completion t
+                     spell-checking-enable-auto-dictionary t
+                     spell-checking-enable-by-default nil)
+     (sql :variables
+          sql-backend 'lsp
+          sql-capitalize-keywords t
+          sql-lsp-sqls-workspace-config-path 'workspace
+          sql-auto-indent nil)
      syntax-checking
      tmux
      toml
@@ -128,6 +162,7 @@ This function should only modify configuration layer settings."
      version-control
      (wakatime :variables
                wakatime-cli-path "/usr/bin/wakatime")
+
      (yaml :variables yaml-enable-lsp t)
 
      ;; custom layers
@@ -651,7 +686,7 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil
+   dotspacemacs-pretty-docs t
 
    ;; If nil the home buffer shows the full path of agenda items
    ;; and todos. If non-nil only the file name is shown.
@@ -706,6 +741,21 @@ before packages are loaded."
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
 
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+                                        :buffer nil
+                                        :command '("wl-copy" "-f" "-n")
+                                        :connection-type 'pipe
+                                        :noquery t))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+        nil ; should return nil if we're the current paste owner
+      (shell-command-to-string "wl-paste -n | tr -d \r")))
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
 
   (dolist (e '("service" "timer" "target" "mount" "automount"
                "slice" "socket" "path" "netdev" "network"
@@ -728,7 +778,7 @@ before packages are loaded."
           (when creds
             (funcall (plist-get creds :secret)))))
 
-  (setq org-appear-trigger 'manual)
+  (setq org-hide-emphasis-markers t)
   (setq org-agenda-window-setup (quote current-window))
   (setq org-agenda-files (directory-files-recursively "~/org/" "\.org$"))
   (setq org-log-done 'time)
@@ -1060,7 +1110,7 @@ This function is called at the very end of Spacemacs initialization."
    '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
    '(org-refile-targets '((nil :maxlevel . 2)))
    '(package-selected-packages
-     '(ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
+     '(company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
