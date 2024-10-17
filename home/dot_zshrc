@@ -13,13 +13,14 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 # Add in zsh plugins
-zinit light zsh-users/zsh-syntax-highlighting
-zinit light zsh-users/zsh-completions
-zinit light zsh-users/zsh-autosuggestions
 zinit light Aloxaf/fzf-tab
-zinit light chisui/zsh-nix-shell
-zinit light nix-community/nix-zsh-completions
 zinit light MichaelAquilina/zsh-you-should-use
+zinit light chisui/zsh-nix-shell
+zinit light mass8326/zsh-chezmoi
+zinit light nix-community/nix-zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-syntax-highlighting
 # Add in snippets
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
@@ -36,14 +37,12 @@ zinit cdreplay -q
 
 # Source all .zsh files from ~/.config/zsh
 for file in ~/.config/zsh/**/*.zsh; do
-  [ -r "$file" ] && source "$file"
+	[ -r "$file" ] && source "$file"
 done
-
 
 autoload bashcompinit
 bashcompinit
 source "/home/phillip/.local/share/bash-completion/completions/am"
-
 
 # Shell integrations
 eval "$(fzf --zsh)"
