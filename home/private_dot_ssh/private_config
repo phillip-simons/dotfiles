@@ -1,7 +1,11 @@
 IdentityFile ~/.ssh/id_github
 AddKeysToAgent  yes
+UpdateHostKeys  yes
 ServerAliveCountMax 6
 ServerAliveInterval 300
+ControlMaster auto
+ControlPath ~/.ssh/controlmasters/%r@%h:%p
+ControlPersist 5
 
 Host media-host
   HostName 192.168.2.103
@@ -22,10 +26,6 @@ Host media-host personal-host pve1-network pve2-network manager
   User phillip
   Port 22
   IdentityFile ~/.ssh/id_default
-  AddKeysToAgent yes
-  ControlMaster auto
-  ControlPath ~/.ssh/controlmasters/%r@%h:%p
-  ControlPersist 5
 
 Host github.com
   User git
