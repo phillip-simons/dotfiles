@@ -1,0 +1,7 @@
+* Dotfiles
+** Theme
+Using doom-one for nearly everything, slowly converting everything to it
+** Install
+#+begin_src shell
+  sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply phillip-simons
+#+end_src
