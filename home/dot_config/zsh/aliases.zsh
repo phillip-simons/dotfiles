@@ -146,7 +146,7 @@ alias dt='cd $HOME/Desktop'     # navigate to Desktop
 alias neofetch='fastfetch'
 
 # Restart Emacs server if not running.
-alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon" # restart Emacs server
+alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon ; /usr/bin/emacs --with-profile doom --daemon" # restart Emacs server
 
 # Aliases under tmux for different contexts.
 if [ -n "$TMUX" ]; then
