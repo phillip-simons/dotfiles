@@ -99,11 +99,13 @@ alias ftldr='compgen -c | fzf | xargs tldr' # tldr page finder
 alias fman='compgen -c | fzf | xargs man'   # man page finder
 
 # Aliases for text editors.
-alias cat='bat'                         # use bat instead of cat for syntax highlighting
-alias emacs="emacsclient -c -a 'emacs'" # GUI version of Emacs
-alias em="emacsclient -t -a 'emacs -nw'"           # Terminal version of Emacs
-alias vim="nvim"                        # use nvim instead of vim
-alias vi="\vim"                         # alias for vi
+alias cat='bat'                                                        # use bat instead of cat for syntax highlighting
+alias emacs="emacsclient -c -a 'emacs'"                                # GUI version of Spacemacs
+alias doom="emacsclient -c -s doom -a 'emacs'"                         # GUI version of Doom Emacs
+alias em="emacsclient -t -a 'emacs -ntw --with-profile doom'"          # Terminal version of Spacemacs
+alias dem="emacsclient -t -s doom -a 'emacs -ntw --with-profile doom'" # Terminal version of Doom Emacs
+alias vim="nvim"                                                       # use nvim instead of vim
+alias vi="\vim"                                                        # alias for vi
 
 # Chezmoi configuration editing.
 alias cz='chezmoi'                                # alias for chezmoi
