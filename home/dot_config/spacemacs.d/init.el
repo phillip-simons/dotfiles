@@ -1112,13 +1112,14 @@ Book.io | Stuff.io
           "/" 'helm-mu
           "C" 'helm-mu-contacts))))
 
-  (require 'org-auto-tangle)
-
-  (add-hook 'org-mode-hook 'org-auto-tangle-mode)
+  (use-package org-auto-tangle
+    :hook (org-mode . org-auto-tangle-mode)
+    :diminish org-auto-tangle-mode)
 
   (use-package org-fancy-priorities
     :hook (org-mode        . org-fancy-priorities-mode)
     :hook (org-agenda-mode . org-fancy-priorities-mode)
+    :diminish org-fancy-priorities-mode
     :config
     (setq org-fancy-priorities-list `(,(all-the-icons-faicon "flag"     :height 1.1 :v-adjust 0.0)
                                       ,(all-the-icons-faicon "arrow-up" :height 1.1 :v-adjust 0.0)
