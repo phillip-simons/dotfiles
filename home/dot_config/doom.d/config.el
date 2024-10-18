@@ -81,91 +81,91 @@
       doom-big-font (font-spec :family "JetBrainsMono Nerd Font" :size 30))
 ;; Enable key-chord mode
 (use-package! key-chord
-              :config
-              (key-chord-mode 1)
-              ;; Bind "fd" to exit insert mode
-              (key-chord-define evil-insert-state-map "fd" 'evil-normal-state))
+  :config
+  (key-chord-mode 1)
+  ;; Bind "fd" to exit insert mode
+  (key-chord-define evil-insert-state-map "fd" 'evil-normal-state))
 (use-package! evil
-              :config
-              (evil-ex-define-cmd "q" 'kill-this-buffer)
-              (evil-ex-define-cmd "wq" 'doom/save-and-kill-buffer)
-              )
+  :config
+  (evil-ex-define-cmd "q" 'kill-this-buffer)
+  (evil-ex-define-cmd "wq" 'doom/save-and-kill-buffer)
+  )
 
 (use-package! copilot
-              :hook (prog-mode . copilot-mode)
-              :bind (:map copilot-completion-map
-                          ("<tab>" . 'copilot-accept-completion)
-                          ("TAB" . 'copilot-accept-completion)
-                          ("C-TAB" . 'copilot-accept-completion-by-word)
-                          ("C-<tab>" . 'copilot-accept-completion-by-word)))
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)))
 (after! (evil copilot)
-        ;; Define the custom function that either accepts the completion or does the default behavior
-        (defun my/copilot-tab-or-default ()
-          (interactive)
-          (if (and (bound-and-true-p copilot-mode)
-                   ;; Add any other conditions to check for active copilot suggestions if necessary
-                   )
-              (copilot-accept-completion)
-            (evil-insert 1))) ; Default action to insert a tab. Adjust as needed.
+  ;; Define the custom function that either accepts the completion or does the default behavior
+  (defun my/copilot-tab-or-default ()
+    (interactive)
+    (if (and (bound-and-true-p copilot-mode)
+             ;; Add any other conditions to check for active copilot suggestions if necessary
+             )
+        (copilot-accept-completion)
+      (evil-insert 1))) ; Default action to insert a tab. Adjust as needed.
 
-        ;; Bind the custom function to <tab> in Evil's insert state
-        (evil-define-key 'insert 'global (kbd "<tab>") 'my/copilot-tab-or-default))
+  ;; Bind the custom function to <tab> in Evil's insert state
+  (evil-define-key 'insert 'global (kbd "<tab>") 'my/copilot-tab-or-default))
 ;; Ensure org-roam is loaded before configuring keybindings
 
 
 (after! org
+  (setq org-ellipsis " ▼ ")
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-hide-emphasis-markers t)
+  (setq org-agenda-window-setup (quote current-window))
+  (setq org-agenda-files (directory-files-recursively "~/org/" "\.org$"))
+  (setq org-log-done 'time)
+  (setq org-src-tab-acts-natively t)
+  (setq org-return-follows-link  t)
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+  (setq org-agenda-start-on-weekday nil)
+  (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (setq org-agenda-skip-timestamp-if-done t)
+  (setq org-agenda-skip-unavailable-files t)
+  (setq org-capture-templates
+        '(
 
-        (setq org-confirm-babel-evaluate nil)
-        (setq org-hide-emphasis-markers t)
-        (setq org-agenda-window-setup (quote current-window))
-        (setq org-agenda-files (directory-files-recursively "~/org/" "\.org$"))
-        (setq org-log-done 'time)
-        (setq org-src-tab-acts-natively t)
-        (setq org-return-follows-link  t)
-        (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-        (setq org-agenda-start-on-weekday nil)
-        (setq org-agenda-skip-deadline-if-done t)
-        (setq org-agenda-skip-scheduled-if-done t)
-        (setq org-agenda-skip-timestamp-if-done t)
-        (setq org-agenda-skip-unavailable-files t)
-        (setq org-capture-templates
-              '(
+          ("n" "Notes")
+          ("np" "Personal Note"
+           entry (file+headline "~/org/10-19_Personal/12_Notes/12.11_notes.org" "General Notes")
+           "** %?"
+           :empty-lines 0)
 
-                ("n" "Notes")
-                ("np" "Personal Note"
-                 entry (file+headline "~/org/10-19_Personal/12_Notes/12.11_notes.org" "General Notes")
-                 "** %?"
-                 :empty-lines 0)
+          ("nw" "Work Note"
+           entry (file+headline "~/org/20-29_Work/27_Notes/27.11_notes.org" "General Notes")
+           "** %?"
+           :empty-lines 0)
 
-                ("nw" "Work Note"
-                 entry (file+headline "~/org/20-29_Work/27_Notes/27.11_notes.org" "General Notes")
-                 "** %?"
-                 :empty-lines 0)
+          ("t" "TODOs")
+          ("tp" "Personal To-Do"
+           entry (file+headline "~/org/10-19_Personal/10_System/10.03_todos.org" "General Tasks")
+           "* TODO [#B] %?\n:Created: %T\n "
+           :empty-lines 0)
+          ("tw" "Work To-Do"
+           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "General Tasks")
+           "* TODO [#B] %?\n:Created: %T\n "
+           :empty-lines 0)
+          ("tc" "Code To-Do"
+           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "Code Related Tasks")
+           "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
+           :empty-lines 0)
 
-                ("t" "TODOs")
-                ("tp" "Personal To-Do"
-                 entry (file+headline "~/org/10-19_Personal/10_System/10.03_todos.org" "General Tasks")
-                 "* TODO [#B] %?\n:Created: %T\n "
-                 :empty-lines 0)
-                ("tw" "Work To-Do"
-                 entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "General Tasks")
-                 "* TODO [#B] %?\n:Created: %T\n "
-                 :empty-lines 0)
-                ("tc" "Code To-Do"
-                 entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "Code Related Tasks")
-                 "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
-                 :empty-lines 0)
+          ("m" "Meeting"
+           entry (file+function "~/org/20-29_Work/24_Meetings/24.11_meetinglog.org" org-reverse-datetree-goto-date-in-file)
+           "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
+           :tree-type week
+           :clock-in t
+           :clock-resume t
+           :empty-lines 0)
 
-                ("m" "Meeting"
-                 entry (file+function "~/org/20-29_Work/24_Meetings/24.11_meetinglog.org" org-reverse-datetree-goto-date-in-file)
-                 "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
-                 :tree-type week
-                 :clock-in t
-                 :clock-resume t
-                 :empty-lines 0)
-
-                ("c" "Contacts" entry (file "~/org/00-09_System/01_Inbox/01.02_Contacts.org")
-                 "* %(org-contacts-template-name)
+          ("c" "Contacts" entry (file "~/org/00-09_System/01_Inbox/01.02_Contacts.org")
+           "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
 :PHONE:
@@ -178,160 +178,171 @@
 :BIRTHDAY:
 :END:")
 
-                ("f" "Follow Up")
-                ("fp" "Personal Follow Up" entry (file+olp "~/org/10-19_Personal/10_System/10.03_todos.org" "Follow Up")
-                 "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
-                ("fw" "Work Follow Up" entry (file+olp "~/org/20-29_Work/20_System/20.03_todos.org" "Follow Up")
-                 "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
-                ))
+          ("f" "Follow Up")
+          ("fp" "Personal Follow Up" entry (file+olp "~/org/10-19_Personal/10_System/10.03_todos.org" "Follow Up")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
+          ("fw" "Work Follow Up" entry (file+olp "~/org/20-29_Work/20_System/20.03_todos.org" "Follow Up")
+           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
+          ))
 
-        (setq org-todo-keywords
-              '((sequence "TODO(t)" "WAITING(w!)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "PAUSED(a!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
-                ))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAITING(w!)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "PAUSED(a!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
+          ))
 
-        (setq org-todo-keyword-faces
-              '(
-                ("TODO"        . (:foreground "GoldenRod"  :weight bold))
-                ("WAITING"     . (:foreground "yellow1"    :weight bold))
-                ("PLANNING"    . (:foreground "DeepPink"   :weight bold))
-                ("IN-PROGRESS" . (:foreground "Cyan"       :weight bold))
-                ("PAUSED"      . (:foreground "gray"       :weight bold))
-                ("VERIFYING"   . (:foreground "DarkOrange" :weight bold))
-                ("BLOCKED"     . (:foreground "Red"        :weight bold))
-                ("DONE"        . (:foreground "LimeGreen"  :weight bold))
-                ("OBE"         . (:foreground "LimeGreen"  :weight bold))
-                ("WONT-DO"     . (:foreground "LimeGreen"  :weight bold))
-                ))
+  (setq org-todo-keyword-faces
+        '(
+          ("TODO"        . (:foreground "GoldenRod"  :weight bold))
+          ("WAITING"     . (:foreground "yellow1"    :weight bold))
+          ("PLANNING"    . (:foreground "DeepPink"   :weight bold))
+          ("IN-PROGRESS" . (:foreground "Cyan"       :weight bold))
+          ("PAUSED"      . (:foreground "gray"       :weight bold))
+          ("VERIFYING"   . (:foreground "DarkOrange" :weight bold))
+          ("BLOCKED"     . (:foreground "Red"        :weight bold))
+          ("DONE"        . (:foreground "LimeGreen"  :weight bold))
+          ("OBE"         . (:foreground "LimeGreen"  :weight bold))
+          ("WONT-DO"     . (:foreground "LimeGreen"  :weight bold))
+          ))
 
 
-        ;; Tags
-        (setq org-tag-alist '(
-                              ;; Meeting types
-                              (:startgroup . nil)
-                              ("team_meeting" . ?t)
-                              ("1on1" . ?1)
-                              ("all_hands" . ?h)
-                              ("sync" . ?s)
-                              (:endgroup . nil)
+  ;; Tags
+  (setq org-tag-alist '(
+                        ;; Meeting types
+                        (:startgroup . nil)
+                        ("team_meeting" . ?t)
+                        ("1on1" . ?1)
+                        ("all_hands" . ?h)
+                        ("sync" . ?s)
+                        (:endgroup . nil)
 
-                              ;; Code TODOs tags
-                              ("QA" . ?q)
-                              ("backend" . ?k)
-                              ("broken_code" . ?c)
-                              ("infrastructure" . ?i)
+                        ;; Code TODOs tags
+                        ("QA" . ?q)
+                        ("backend" . ?k)
+                        ("broken_code" . ?c)
+                        ("infrastructure" . ?i)
 
-                              ;; Special tags
-                              ("CRITICAL" . ?x)
-                              ("obstacle" . ?o)
+                        ;; Special tags
+                        ("CRITICAL" . ?x)
+                        ("obstacle" . ?o)
 
-                              ;; Meeting tags
-                              ("general" . ?g)
-                              ("meeting" . ?m)
-                              ("misc" . ?z)
-                              ("planning" . ?n)
+                        ;; Meeting tags
+                        ("general" . ?g)
+                        ("meeting" . ?m)
+                        ("misc" . ?z)
+                        ("planning" . ?n)
 
-                              ;; Work Log Tags
-                              ("accomplishment" . ?a)
+                        ;; Work Log Tags
+                        ("accomplishment" . ?a)
 
-                              ;; Personal tags
-                              ("hobby" . ?h)
-                              ("personal" . ?p)
+                        ;; Personal tags
+                        ("hobby" . ?h)
+                        ("personal" . ?p)
 
-                              ;; Organization
-                              (:startgroup . nil)
-                              ("directory" . ?d)
-                              ("file" . ?f)
-                              ("link" . ?n)
-                              (:endgroup . nil)
-                              ))
+                        ;; Organization
+                        (:startgroup . nil)
+                        ("directory" . ?d)
+                        ("file" . ?f)
+                        ("link" . ?n)
+                        (:endgroup . nil)
+                        ))
 
-        ;; Tag colors
-        (setq org-tag-faces
-              '(
-                ("planning"  . (:foreground "mediumPurple1" :weight bold))
-                ("backend"   . (:foreground "royalblue1"    :weight bold))
-                ("frontend"  . (:foreground "forest green"  :weight bold))
-                ("QA"        . (:foreground "sienna"        :weight bold))
-                ("meeting"   . (:foreground "yellow1"       :weight bold))
-                ("CRITICAL"  . (:foreground "red1"          :weight bold))
-                )
-              )
-        ;; Agenda View "d"
-        (defun air-org-skip-subtree-if-priority (priority)
-          "Skip an agenda subtree if it has a priority of PRIORITY.
+  ;; Tag colors
+  (setq org-tag-faces
+        '(
+          ("planning"  . (:foreground "mediumPurple1" :weight bold))
+          ("backend"   . (:foreground "royalblue1"    :weight bold))
+          ("frontend"  . (:foreground "forest green"  :weight bold))
+          ("QA"        . (:foreground "sienna"        :weight bold))
+          ("meeting"   . (:foreground "yellow1"       :weight bold))
+          ("CRITICAL"  . (:foreground "red1"          :weight bold))
+          )
+        )
+  ;; Agenda View "d"
+  (defun air-org-skip-subtree-if-priority (priority)
+    "Skip an agenda subtree if it has a priority of PRIORITY.
 
   PRIORITY may be one of the characters ?A, ?B, or ?C."
-          (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-                (pri-value (* 1000 (- org-lowest-priority priority)))
-                (pri-current (org-get-priority (thing-at-point 'line t))))
-            (if (= pri-value pri-current)
-                subtree-end
-              nil)))
+    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+          (pri-value (* 1000 (- org-lowest-priority priority)))
+          (pri-current (org-get-priority (thing-at-point 'line t))))
+      (if (= pri-value pri-current)
+          subtree-end
+        nil)))
 
-        (setq org-agenda-skip-deadline-if-done t)
+  (setq org-agenda-skip-deadline-if-done t)
 
-        (setq org-agenda-custom-commands
-              '(
-                ;; Daily Agenda & TODOs
-                ("d" "Daily agenda and all TODOs"
+  (setq org-agenda-custom-commands
+        '(
+          ;; Daily Agenda & TODOs
+          ("d" "Daily agenda and all TODOs"
 
-                 ;; Display items with priority A
-                 ((tags "PRIORITY=\"A\""
-                        ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                         (org-agenda-overriding-header "High-priority unfinished tasks:")))
+           ;; Display items with priority A
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
 
-                  ;; View 7 days in the calendar view
-                  (agenda "" ((org-agenda-span 7)))
+            ;; View 7 days in the calendar view
+            (agenda "" ((org-agenda-span 7)))
 
-                  ;; Display items with priority B (really it is view all items minus A & C)
-                  (alltodo ""
-                           ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
-                                                           (air-org-skip-subtree-if-priority ?C)
-                                                           (org-agenda-skip-if nil '(scheduled deadline))))
-                            (org-agenda-overriding-header "ALL normal priority tasks:")))
+            ;; Display items with priority B (really it is view all items minus A & C)
+            (alltodo ""
+                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
+                                                     (air-org-skip-subtree-if-priority ?C)
+                                                     (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "ALL normal priority tasks:")))
 
-                  ;; Display items with pirority C
-                  (tags "PRIORITY=\"C\""
-                        ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                         (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
-                  )
+            ;; Display items with pirority C
+            (tags "PRIORITY=\"C\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
+            )
 
-                 ;; Don't compress things (change to suite your tastes)
-                 ((org-agenda-compact-blocks nil)))
-                ))
-        (setq org-contacts-files '("~/org/00-09_System/01_Inbox/01.02_Contacts.org" "~/org/20-29_Work/23_People/23.11_Contacts.org" "~/org/10-19_Personal/17_People/17.11_Contacts.org"))
-        (setq org-startup-indented t
-              org-pretty-entities t)
+           ;; Don't compress things (change to suite your tastes)
+           ((org-agenda-compact-blocks nil)))
+          ))
+  (setq org-contacts-files '("~/org/00-09_System/01_Inbox/01.02_Contacts.org" "~/org/20-29_Work/23_People/23.11_Contacts.org" "~/org/10-19_Personal/17_People/17.11_Contacts.org"))
+  (setq org-startup-indented t
+        org-pretty-entities t)
 
-        (setq-default evil-kill-on-visual-paste nil)
-        (setq org-refile-use-outline-path t)
-        (setq org-refile-allow-creating-parent-nodes 'confirm)
-        ;; Function to match second-level headings under "* Projects"
-        (defun my/org-projects-refile-target ()
-          (save-excursion
-            (org-back-to-heading t)
-            (when (looking-at "^\\* Projects")
-              (org-map-entries (lambda () (point)) nil 'tree))))
+  (setq-default evil-kill-on-visual-paste nil)
+  (setq org-refile-use-outline-path t)
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  ;; Function to match second-level headings under "* Projects"
+  (defun my/org-projects-refile-target ()
+    (save-excursion
+      (org-back-to-heading t)
+      (when (looking-at "^\\* Projects")
+        (org-map-entries (lambda () (point)) nil 'tree))))
 
-        (setq org-refile-targets
-              '((nil :maxlevel . 1) ;; Top-level headings globally
-                (my/org-projects-refile-target :level . 2))) ;; Second-level under "* Projects"
-        )
+  (setq org-refile-targets
+        '((nil :maxlevel . 1) ;; Top-level headings globally
+          (my/org-projects-refile-target :level . 2))) ;; Second-level under "* Projects"
+  )
 
+(use-package! org-auto-tangle
+  :defer t
+  :hook (org-mode . org-auto-tangle-mode))
 
+(defun dt/insert-auto-tangle-tag ()
+  "Insert auto-tangle tag in a literate config."
+  (interactive)
+  (evil-org-open-below 1)
+  (insert "#+auto_tangle: t ")
+  (evil-force-normal-state))
 
+(map! :leader
+      :desc "Insert auto_tangle tag" "i a" #'dt/insert-auto-tangle-tag)
 
-;; (use-package! org-superstar
-;;   :hook (org-mode . org-superstar-mode)
-;;   :config
-;;   (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿"))
-;;   (setq org-superstar-item-bullet-alist '((?- . ?•)
-;;                                           (?+ . ?➤))))
+(use-package! org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :config
+  (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿"))
+  (setq org-superstar-item-bullet-alist '((?- . ?•)
+                                          (?+ . ?➤))))
 (use-package! mixed-pitch
-              :hook
-              (org-mode . mixed-pitch-mode)
-              :config
-              (setq mixed-pitch-set-height t))
+  :hook
+  (org-mode . mixed-pitch-mode)
+  :config
+  (setq mixed-pitch-set-height t))
 (custom-set-faces
  '(org-document-title ((t (:height 1.5 :weight bold))))
  '(org-level-1 ((t (:inherit outline-1 :height 1.25))))
