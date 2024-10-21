@@ -1,4 +1,16 @@
+[".config/spacemacs"]
+  type = "git-repo"
+  url = "https://github.com/syl20bnr/spacemacs"
+  refreshPeriod = "168h"
+
+
+[".config/doom-emacs"]
+  type = "git-repo"
+  url = "https://github.com/doomemacs/doomemacs"
+  refreshPeriod = "168h"
+
+
 [".config/emacs"]
-type = "git-repo"
-url = "https://github.com/syl20bnr/spacemacs"
-refreshPeriod = "168h"
+  type = "git-repo"
+  url = "https://github.com/plexus/chemacs2"
+  refreshPeriod = "168h"
