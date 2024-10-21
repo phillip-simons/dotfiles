@@ -18,7 +18,11 @@
           "powerline_symbol": "\ue0b0",
           "properties": {
             "home_icon": "~",
-            "style": "full"
+            "style": "agnoster_full",
+            "max_width": 3,
+            "mapped_locations": {
+              "~/code": " \ueac4 "
+            }
           },
           "style": "powerline",
           "template": " \uf07c {{ .Path }} ",
@@ -36,6 +40,7 @@
           "powerline_symbol": "\ue0b0",
           "properties": {
             "branch_icon": "\uf126 ",
+            "branch_max_length": 8,
             "fetch_stash_count": true,
             "fetch_status": true,
             "fetch_upstream_icon": true
