@@ -62,6 +62,7 @@ This function should only modify configuration layer settings."
      epub
      emacs-lisp
      erc
+     eww
      games
      (git :variables
           git-enable-magit-todos-plugin t
@@ -132,6 +133,7 @@ This function should only modify configuration layer settings."
      (rust :variables
            lsp-rust-server 'rust-analyzer
            rust-format-on-save t)
+     search-engine
      (shell :variables
             shell-default-term-shell "/usr/bin/zsh"
             shell-default-full-span nil
@@ -141,6 +143,7 @@ This function should only modify configuration layer settings."
      (shell-scripts :variables
                     shell-scripts-backend 'lsp
                     shell-scripts-format-on-save t)
+     slack
      (spacemacs-layouts :variables
                         layouts-enable-autosave t
                         spacemacs-layouts-restrict-spc-tab t)
@@ -154,7 +157,6 @@ This function should only modify configuration layer settings."
           sql-lsp-sqls-workspace-config-path 'workspace
           sql-auto-indent nil)
      syntax-checking
-     tabs
      tmux
      toml
      (treemacs :variables
@@ -181,7 +183,8 @@ This function should only modify configuration layer settings."
                wakatime-cli-path "/usr/bin/wakatime")
 
      (yaml :variables yaml-enable-lsp t)
-
+     pez
+     google-calendar
      ;; custom layers
      )
 
@@ -197,20 +200,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-additional-packages
    '(
      bui
-     dash
-     dash-functional
-     helm-mu
-     igist
      lsp-docker
-     mixed-pitch
-     mu4easy
-     org-auto-tangle
-     org-fancy-priorities
-     org-msg
-     org-noter
-     org-reverse-datetree
-     org-starter
-     ox-ssh
      )
 
    ;; A list of packages that cannot be updated.
@@ -349,8 +339,10 @@ It should only modify the values of Spacemacs settings."
    ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
    ;; number is the project limit and the second the limit on the recent files
    ;; within a project.
-   dotspacemacs-startup-lists '((agenda . 5)
-                                (recents-by-project . (5 . 7)))
+   dotspacemacs-startup-lists '((agenda . 3)
+                                (todos . 5)
+                                (recents-by-project . (5 . 7))
+                                (recents . 5))
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
@@ -364,7 +356,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil, show file icons for entries and headings on Spacemacs home buffer.
    ;; This has no effect in terminal or if "all-the-icons" package or the font
    ;; is not installed. (default nil)
-   dotspacemacs-startup-buffer-show-icons t
+   dotspacemacs-startup-buffer-show-icons nil
 
    ;; Default major mode for a new empty buffer. Possible values are mode
    ;; names such as `text-mode'; and `nil' to use Fundamental mode.
@@ -441,7 +433,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, J and K move lines up and down when in visual mode.
    ;; (default nil)
-   dotspacemacs-visual-line-move-text nil
+   dotspacemacs-visual-line-move-text t
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -558,7 +550,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil unicode symbols are displayed in the mode line.
    ;; If you use Emacs as a daemon and wants unicode characters only in GUI set
    ;; the value to quoted `display-graphic-p'. (default t)
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols 'display-graphic-p
 
    ;; If non-nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters point
@@ -591,16 +583,16 @@ It should only modify the values of Spacemacs settings."
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
-   dotspacemacs-folding-method 'evil
+   dotspacemacs-folding-method 'origami
 
    ;; If non-nil and `dotspacemacs-activate-smartparens-mode' is also non-nil,
    ;; `smartparens-strict-mode' will be enabled in programming modes.
    ;; (default nil)
-   dotspacemacs-smartparens-strict-mode t
+   dotspacemacs-smartparens-strict-mode nil
 
    ;; If non-nil smartparens-mode will be enabled in programming modes.
    ;; (default t)
-   dotspacemacs-activate-smartparens-mode t
+   dotspacemacs-activate-smartparens-mode nil
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
    ;; over any automatically added closing parenthesis, bracket, quote, etc...
@@ -748,16 +740,28 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  (setq alert-default-style 'libnotify)
   (global-subword-mode 1)
   (setq edit-server-default-major-mode 'org-mode)
   (setq undo-limit 500000
         evil-want-fine-undo t)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
+  (setq persp-kill-foreign-buffer-behaviour 'kill)
   (setq dired-recursive-copies 'always)
   (setq dired-dwim-target t)
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
+
+  (setq org-gcal-client-id (auth-source-pick-first-password
+                            :host "book.gcal.api"
+                            :user "clientid"))
+  (setq org-gcal-client-secret (auth-source-pick-first-password
+                                :host "book.gcal.api"
+                                :user "clientsecret"))
+  (org-gcal-reload-client-id-secret)
+  (setq org-gcal-file-alist '(("phillip@book.io" . "~/.config/spacemacs.d/cache/work_calendar.org")
+                              ;; ("phillip@simons.gg" . "~/.config/spacemacs.d/cache/personal_calender.org")
+                              ))
 
 
   (dolist (e '("service" "timer" "target" "mount" "automount"
@@ -765,8 +769,6 @@ before packages are loaded."
                "link"))
     (push (cons (concat "\\." e "\\'") 'conf-unix-mode)
           auto-mode-alist))
-  (add-hook 'org-mode-hook 'mixed-pitch-mode)
-  (setq org-confirm-babel-evaluate nil)
   (setq
    gptel-model "codellama:latest"
    gptel-backend (gptel-make-ollama "Ollama"
@@ -781,353 +783,30 @@ before packages are loaded."
           (when creds
             (funcall (plist-get creds :secret)))))
 
-  (setq org-hide-emphasis-markers t)
-  (setq org-agenda-window-setup (quote current-window))
-  (setq org-agenda-files (directory-files-recursively "~/org/" "\.org$"))
-  (setq org-log-done 'time)
-  (setq org-highest-priority ?A
-        org-default-priority ?B
-        org-lowest-priority ?D)
-  (setq org-src-tab-acts-natively t)
-  (setq org-return-follows-link  t)
-  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-  (setq org-agenda-start-on-weekday nil)
-  (setq org-agenda-skip-deadline-if-done t)
-  (setq org-agenda-skip-scheduled-if-done t)
-  (setq org-agenda-skip-timestamp-if-done t)
-  (setq org-agenda-skip-unavailable-files t)
-  (setq org-capture-templates
-        '(
-
-          ("n" "Notes")
-          ("np" "Personal Note"
-           entry (file+headline "~/org/10-19_Personal/12_Notes/12.11_notes.org" "General Notes")
-           "** %?"
-           :empty-lines 0)
-
-          ("nw" "Work Note"
-           entry (file+headline "~/org/20-29_Work/27_Notes/27.11_notes.org" "General Notes")
-           "** %?"
-           :empty-lines 0)
-
-          ("t" "TODOs")
-          ("tp" "Personal To-Do"
-           entry (file+headline "~/org/10-19_Personal/10_System/10.03_todos.org" "General Tasks")
-           "* TODO [#B] %?\n:Created: %T\n "
-           :empty-lines 0)
-          ("tw" "Work To-Do"
-           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "General Tasks")
-           "* TODO [#B] %?\n:Created: %T\n "
-           :empty-lines 0)
-          ("tc" "Code To-Do"
-           entry (file+headline "~/org/20-29_Work/20_System/20.03_todos.org" "Code Related Tasks")
-           "* TODO [#B] %?\n:Created: %T\n%i\n%a\nProposed Solution: "
-           :empty-lines 0)
-
-          ("m" "Meeting"
-           entry (file+function "~/org/20-29_Work/24_Meetings/24.11_meetinglog.org" org-reverse-datetree-goto-date-in-file)
-           "* %? :meeting:%^g \n:Created: %T\n** Attendees\n*** \n** Notes\n** Action Items\n*** TODO [#A] "
-           :tree-type week
-           :clock-in t
-           :clock-resume t
-           :empty-lines 0)
-
-          ("c" "Contacts" entry (file "~/org/00-09_System/01_Inbox/01.02_Contacts.org")
-           "* %(org-contacts-template-name)
-:PROPERTIES:
-:EMAIL: %(org-contacts-template-email)
-:PHONE:
-:ALIAS:
-:NICKNAME:
-:IGNORE:
-:ICON:
-:NOTE:
-:ADDRESS:
-:BIRTHDAY:
-:END:")
-
-          ("f" "Follow Up")
-          ("fp" "Personal Follow Up" entry (file+olp "~/org/10-19_Personal/10_System/10.03_todos.org" "Follow Up")
-           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
-          ("fw" "Work Follow Up" entry (file+olp "~/org/20-29_Work/20_System/20.03_todos.org" "Follow Up")
-           "* TODO Follow up with %:fromname on %a\nSCHEDULED:%t\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+2d\"))\n\n%i" :immediate-finish t)
-          ))
-
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w!)" "PLANNING(p)" "IN-PROGRESS(i@/!)" "PAUSED(a!)" "VERIFYING(v!)" "BLOCKED(b@)"  "|" "DONE(d!)" "OBE(o@!)" "WONT-DO(w@/!)" )
-          ))
-
-  (setq org-todo-keyword-faces
-        '(
-          ("TODO"        . (:foreground "GoldenRod"  :weight bold))
-          ("WAITING"     . (:foreground "yellow1"    :weight bold))
-          ("PLANNING"    . (:foreground "DeepPink"   :weight bold))
-          ("IN-PROGRESS" . (:foreground "Cyan"       :weight bold))
-          ("PAUSED"      . (:foreground "gray"       :weight bold))
-          ("VERIFYING"   . (:foreground "DarkOrange" :weight bold))
-          ("BLOCKED"     . (:foreground "Red"        :weight bold))
-          ("DONE"        . (:foreground "LimeGreen"  :weight bold))
-          ("OBE"         . (:foreground "LimeGreen"  :weight bold))
-          ("WONT-DO"     . (:foreground "LimeGreen"  :weight bold))
-          ))
-
-
-  ;; Tags
-  (setq org-tag-alist '(
-                        ;; Meeting types
-                        (:startgroup . nil)
-                        ("team_meeting" . ?t)
-                        ("1on1" . ?1)
-                        ("all_hands" . ?h)
-                        ("sync" . ?s)
-                        (:endgroup . nil)
-
-                        ;; Code TODOs tags
-                        ("QA" . ?q)
-                        ("backend" . ?k)
-                        ("broken_code" . ?c)
-                        ("infrastructure" . ?i)
-
-                        ;; Special tags
-                        ("CRITICAL" . ?x)
-                        ("obstacle" . ?o)
-
-                        ;; Meeting tags
-                        ("general" . ?g)
-                        ("meeting" . ?m)
-                        ("misc" . ?z)
-                        ("planning" . ?n)
-
-                        ;; Work Log Tags
-                        ("accomplishment" . ?a)
-
-                        ;; Personal tags
-                        ("hobby" . ?h)
-                        ("personal" . ?p)
-
-                        ;; Organization
-                        (:startgroup . nil)
-                        ("directory" . ?d)
-                        ("file" . ?f)
-                        ("link" . ?n)
-                        (:endgroup . nil)
-                        ))
-
-  ;; Tag colors
-  (setq org-tag-faces
-        '(
-          ("planning"  . (:foreground "mediumPurple1" :weight bold))
-          ("backend"   . (:foreground "royalblue1"    :weight bold))
-          ("frontend"  . (:foreground "forest green"  :weight bold))
-          ("QA"        . (:foreground "sienna"        :weight bold))
-          ("meeting"   . (:foreground "yellow1"       :weight bold))
-          ("CRITICAL"  . (:foreground "red1"          :weight bold))
-          )
-        )
-  ;; Agenda View "d"
-  (defun air-org-skip-subtree-if-priority (priority)
-    "Skip an agenda subtree if it has a priority of PRIORITY.
-
-  PRIORITY may be one of the characters ?A, ?B, or ?C."
-    (let ((subtree-end (save-excursion (org-end-of-subtree t)))
-          (pri-value (* 1000 (- org-lowest-priority priority)))
-          (pri-current (org-get-priority (thing-at-point 'line t))))
-      (if (= pri-value pri-current)
-          subtree-end
-        nil)))
-
-  (setq org-agenda-skip-deadline-if-done t)
-
-  (setq org-agenda-custom-commands
-        '(
-          ;; Daily Agenda & TODOs
-          ("d" "Daily agenda and all TODOs"
-
-           ;; Display items with priority A
-           ((tags "PRIORITY=\"A\""
-                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                   (org-agenda-overriding-header "High-priority unfinished tasks:")))
-
-            ;; View 7 days in the calendar view
-            (agenda "" ((org-agenda-span 7)))
-
-            ;; Display items with priority B (really it is view all items minus A & C)
-            (alltodo ""
-                     ((org-agenda-skip-function '(or (air-org-skip-subtree-if-priority ?A)
-                                                     (air-org-skip-subtree-if-priority ?C)
-                                                     (air-org-skip-subtree-if-priority ?D)
-                                                     (org-agenda-skip-if nil '(scheduled deadline))))
-                      (org-agenda-overriding-header "ALL normal priority tasks:")))
-
-            ;; Display items with pirority C
-            (tags "PRIORITY=\"C\""
-                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                   (org-agenda-overriding-header "Low-priority Unfinished tasks:")))
-
-            (tags "PRIORITY=\"D\""
-                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                   (org-agenda-overriding-header "Backlog:")))
-            )
-
-           ;; Don't compress things (change to suite your tastes)
-           ((org-agenda-compact-blocks nil)))
-          ))
-  (setq org-contacts-files '("~/org/00-09_System/01_Inbox/01.02_Contacts.org" "~/org/20-29_Work/23_People/23.11_Contacts.org" "~/org/10-19_Personal/17_People/17.11_Contacts.org"))
-  (setq org-startup-indented t
-        org-ellipsis " ▼ "
-        org-superstar-prettify-item-bullets t
-        org-superstar-itembullet-alist '((?+ . ?➤) (?- . ?✦))
-        org-pretty-entities t)
-  (spacemacs|diminish wakatime-mode " ⓦ" " W")
-  (spacemacs|diminish mixed-pitch-mode "" " ")
-  (setq mail-user-agent 'mu4e-user-agent)
-
-  (setq-default evil-kill-on-visual-paste nil)
-  (require 'git-commit)
-  (global-git-commit-mode t)
-  ;; Speed up TRAMP connections by skipping certain checks
-  (setq tramp-default-method "ssh")
-  (setq tramp-ssh-controlmaster-options
-        "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
-  (setq igist-auth-marker 'forge)
-  (spacemacs/set-leader-keys
-    "pV" 'projectile-run-vterm-other-window)
-  (use-package igist
-    :init
-    (spacemacs/set-leader-keys
-      "gg" 'igist-dispatch)
-    :ensure t)
-  (setq org-export-with-toc nil)
-  (setq org-export-with-sub-superscripts '{} )
-  (setq org-refile-use-outline-path t)
-  (setq org-refile-allow-creating-parent-nodes 'confirm)
-  ;; Function to match second-level headings under "* Projects"
-  (defun my/org-projects-refile-target ()
-    (save-excursion
-      (org-back-to-heading t)
-      (when (looking-at "^\\* Projects")
-        (org-map-entries (lambda () (point)) nil 'tree))))
-
-  (setq org-refile-targets
-        '((nil :maxlevel . 1) ;; Top-level headings globally
-          (my/org-projects-refile-target :level . 2))) ;; Second-level under "* Projects"
-
-  (setq mu4easy-contexts '((mu4easy-context
-                            :c-name  "Personal"
-                            :name    "Phillip Simons"
-                            :maildir "GmailPersonal"
-                            :mail    "phillip@simons.gg"
-                            :smtp    "smtp.gmail.com"
-                            :sent-action delete
-                            :sig "
-
-Best,
-
-#+begin_signature
---
-Phillip Simons
-📧 [[mailto:phillip@simons.gg][phillip@simons.gg]]
-📞 +1 (214) 842-0054
-#+end_signature")
-                           (mu4easy-context
-                            :c-name  "Work"
-                            :name    "Phillip Simons"
-                            :maildir "GmailWork"
-                            :mail    "phillip@book.io"
-                            :smtp    "smtp.gmail.com"
-                            :sent-action delete
-                            :sig "
-
-Best,
-
-#+begin_signature
---
-*Phillip Simons*
-Book.io | Stuff.io
-📧 [[mailto:phillip@book.io][phillip@book.io]]
-📞 +1 (214) 842-0054
-#+end_signature")
-                           ))
-  (use-package mu4easy
-    :init (spacemacs/set-leader-keys "aem" 'mu4e)
-    :ensure t
-    :config
-    (evilified-state-evilify-map mu4e-main-mode-map
-      :mode mu4e-main-mode
-      :bindings
-      (kbd "j") 'mu4e-search-maildir
-      (kbd "C-j") 'next-line
-      (kbd "C-k") 'previous-line)
-
-    (evilified-state-evilify-map
-      mu4e-headers-mode-map
-      :mode mu4e-headers-mode
-      :bindings
-      (kbd "C-j") 'mu4e-headers-next
-      (kbd "C-k") 'mu4e-headers-prev
-      (kbd "J") (lambda ()
-                  (interactive)
-                  (mu4e-headers-mark-thread nil '(read))))
-
-    (evilified-state-evilify-map
-      mu4e-view-mode-map
-      :mode mu4e-view-mode
-      :bindings
-      (kbd "C-j") 'mu4e-view-headers-next
-      (kbd "C-k") 'mu4e-view-headers-prev
-      (kbd "J") (lambda ()
-                  (interactive)
-                  (mu4e-view-mark-thread '(read)))
-      (kbd "gu") 'mu4e-view-go-to-url)
-
-    (spacemacs/set-leader-keys-for-major-mode 'org-msg-edit-mode
-      dotspacemacs-major-mode-leader-key 'org-ctrl-c-ctrl-c
-      "c" 'org-ctrl-c-ctrl-c
-      "k" 'message-kill-buffer
-      "a" 'org-msg-attach
-      "s" 'message-goto-subject
-      "b" 'org-msg-goto-body
-      "e" 'org-msg-preview
-      "d" 'message-dont-send)
-    (setq mu4easy-greeting "Howdy%s,\n\n")
-    (mu4easy-mode)
-    )
-
-  (use-package helm-mu
-    :defer t
-    :config
-    (setq helm-mu-contacts-personal t)
-    :init
-    (let ((mu4e-modes (append '(mu4e-main-mode mu4e-headers-mode)
-                              '(mu4e-view-mode mu4e-compose-mode mu4e-loading-mode))))
-      (dolist (m mu4e-modes)
-        (spacemacs/set-leader-keys-for-major-mode m
-          "S" 'helm-mu
-          "/" 'helm-mu
-          "C" 'helm-mu-contacts))))
-
-  (use-package org-auto-tangle
-    :hook (org-mode . org-auto-tangle-mode)
-    :diminish org-auto-tangle-mode)
-
-  (use-package org-fancy-priorities
-    :hook (org-mode        . org-fancy-priorities-mode)
-    :hook (org-agenda-mode . org-fancy-priorities-mode)
-    :diminish org-fancy-priorities-mode
-    :config
-    (setq org-fancy-priorities-list `(,(all-the-icons-faicon "flag"     :height 1.1 :v-adjust 0.0)
-                                      ,(all-the-icons-faicon "arrow-up" :height 1.1 :v-adjust 0.0)
-                                      ,(all-the-icons-faicon "square"   :height 1.1 :v-adjust 0.0)
-                                      ,(all-the-icons-faicon "bed" :height 1.1 :v-adjust 0.0)
-                                      ))
-    (setq org-priority-faces
-          '((?A :foreground "#ff6c6b" :weight bold)
-            (?B :foreground "#ecbe78" :weight bold)
-            (?C :foreground "#98be65" :weight bold)
-            (?D :foreground "#51afef" :weight bold)
-            )))
-
+  ;; Slack
+  (slack-register-team
+   :name "$BOOK"
+   :default t
+   :token (auth-source-pick-first-password
+           :host "book.slack.com"
+           :user "phillip@book.io")
+   :cookie (auth-source-pick-first-password
+            :host "book.slack.com"
+            :user "phillip@book.io^cookie")
+   :subscribed-channels '(general dev dev-backend dev-status inception mint-and-print random office tequila-mockingbird))
   )
+(url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
+
+(with-eval-after-load 'evil
+  ;; Disable arrow keys in normal and visual modes
+  (define-key evil-normal-state-map (kbd "<left>") 'ignore)
+  (define-key evil-normal-state-map (kbd "<right>") 'ignore)
+  (define-key evil-normal-state-map (kbd "<up>") 'ignore)
+  (define-key evil-normal-state-map (kbd "<down>") 'ignore)
+  (define-key evil-visual-state-map (kbd "<left>") 'ignore)
+  (define-key evil-visual-state-map (kbd "<right>") 'ignore)
+  (define-key evil-visual-state-map (kbd "<up>") 'ignore)
+  (define-key evil-visual-state-map (kbd "<down>") 'ignore))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -1147,7 +826,7 @@ This function is called at the very end of Spacemacs initialization."
    '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
    '(org-refile-targets '((nil :maxlevel . 2)))
    '(package-selected-packages
-     '(nov esxml kv centaur-tabs org-fancy-priorities csv-mode ranger company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line))
+     '(mu4easy mu4e-column-faces calfw calfw-org org-gcal request-deferred persist elnode db fakir creole web noflet company-emoji emoji-cheat-sheet-plus slack circe oauth2 websocket engine-mode nov esxml kv centaur-tabs org-fancy-priorities csv-mode ranger company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line))
    '(paradox-github-token t)
    '(spacemacs-large-file-modes-list
      '(archive-mode tar-mode jka-compr git-commit-mode image-mode doc-view-mode doc-view-mode-maybe ebrowse-tree-mode pdf-view-mode tags-table-mode fundamental-mode nov-mode))

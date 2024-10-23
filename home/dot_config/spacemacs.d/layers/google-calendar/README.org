@@ -1,0 +1,278 @@
+#+TITLE: Google calendar layer
+#+STARTUP: showall
+
+[[file:./img/gcal.png]]
+* Table of Contents                                        :TOC_4_gh:noexport:
+- [[#description][Description]]
+- [[#install][Install]]
+- [[#configuration][Configuration]]
+  - [[#configure-org-gcal][Configure org-gcal]]
+    - [[#create-credentials][Create credentials]]
+    - [[#setup-org-gcal][Setup org-gcal]]
+      - [[#miscellaneous-org-gcal-settings][Miscellaneous org-gcal settings]]
+  - [[#configure-calfw][Configure calfw]]
+  - [[#schedule-events-with-org-capture][Schedule events with org-capture]]
+- [[#key-bindings][Key bindings]]
+- [[#footnotes][Footnotes]]
+
+* Description
+This layer provides two-way Google calendar synchronization using the =org-gcal=
+package and a dedicated calendar view using =calfw= package.
+
+Calendar events are synchronized to your computer by =org-gcal=. They are stored
+in org format in one or several files user definable files. This allow the user
+both to include these calendar events in =org-agenda= and to create new events
+from any emacs buffer with =org-capture=. To learn how to setup and use the many
+features of =org-mode= see [[http://orgmode.org/][orgmode.org]].
+
+Your calendar events and TODOs (if you are an org user) can be viewed in either
+=org-agenda= or the dedicated calendar view provided by =calfw=. Calfw has
+daily, weekly and monthly calendar views and lets the user to easily create new
+events from the view itself.
+
+* Install
+To use google-calendar layer.
+
+1. =git clone https://github.com/HanshenWang/google-calendar-layer ~/.emacs.d/private/google-calendar=
+2. add it to your =~/.spacemacs=. You will need to add =google-calendar= to the existing =dotspacemacs-configuration-layers= list in this file.
+
+* Configuration
+** Configure org-gcal
+To use sync your Google calendar with [[https://github.com/myuhe/org-gcal.el][org-gcal]] you need Auth credentials from Google Developers Console.
+
+*** Create credentials
+1. Go to [[https://console.developers.google.com/project][Google Developers Console]]
+
+2. Create a project (with any name and any location)
+
+3. Click on the project
+
+4. Click on the hamburger menu at the upper-left, then *APIs & Services*, then
+   *Credentials*.
+
+5. Click on *Configure consent screen,* then on *Create*.
+
+6. Set up a consent screen. Give the application a name and set it up as type
+   "external application", and accept the defaults for everything else. You
+   should not need to verify the application, because only your user will be
+   using it. Then click on *Publish*.
+
+7. Once you've set up a consent screen (this is required), click on *Create
+   Credentials* and *Oauth client ID* with Application type /Other/.
+
+8. Click on *Create Client ID*
+
+9. Record the Client ID and Client secret for setup.
+
+10. Under the same *APIs & Services* menu section, select *Library*
+
+11. Scroll down to *Calendar API*. Click the *Enable* button to enable calendar
+    API access to the app you created in steps 5 & 6.
+
+    Go to [[https://www.google.com/calendar/render][Google setting page]] to check the calendar ID.
+
+12. Go to [[https://www.google.com/calendar/render][Google setting page]] and click the gear-shaped settings icon in the
+    upper right, then select "Settings" from the drop down list.
+
+13. Select the "Setting for my Calendars" tab on the left, which will
+    display a list of your calendars.
+
+14. Select the calendar you would like to synchronize with. This will
+    take you to the "Calendar Settings" page for that calendar. Near
+    the end is a section titled "Integrate Calendar". Following the XML,
+    ICAL, and HTML tags, you will see your Calendar ID.
+
+15. Copy the Calendar ID for use in the settings below, where you will
+    use it as the first element in the org-gcal-file-alist for
+    associating calendars with specific org files. You can associate
+    different calendars with different org files, so repeat this for
+    each calendar you want to use.
+
+*** Setup org-gcal
+In =dotspacemacs/user-config=, set the following variables with your Client ID and Secret.
+#+BEGIN_SRC emacs-lisp
+  (setq org-gcal-client-id "YourClientId"
+        org-gcal-client-secret "YourSecret")
+#+END_SRC
+
+*Optionally*, store authentication info using spacemacs "password-store" layer[fn:1]
+
+#+begin_src emacs-lisp
+  (setq org-gcal-client-id (password-store-get "secrets/org-gcal-client-id")
+        org-gcal-client-secret (password-store-get "secrets/org-gcal-client-secret"))
+#+end_src
+
+Or with a =.authinfo= file[fn:2] , have something similar to the following in your =.emacs=:
+
+#+begin_src emacs-lisp
+  (require 'netrc)
+
+  (defun get-authinfo (host port)
+    (let* ((netrc (netrc-parse (expand-file-name "~/.authinfo.gpg")))
+           (hostentry (netrc-machine netrc host port port)))
+      (when hostentry (netrc-get hostentry "password"))))
+
+  (setq org-gcal-client-id <gcal-client-id>
+        org-gcal-client-secret (get-authinfo "gcal.api" "9999")
+        org-gcal-file-alist '(...))
+#+end_src
+
+And respectively in the =authinfo.gpg= file,
+
+#+begin_src text
+...
+machine gcal.api   login none  port 9999   password <gcal-client-secret>
+...
+#+end_src
+
+You need to specify which calendar is going to be synchronized to which file.
+The variable =org-gcal-file-alist= expect a list where each element is an
+associated list containing a Calendar-ID and which file to synchronize to, [[org-gcal-cals][see
+example]]. If you want to synchronize multiple calendars its recommended to
+synchronize them with different files. This also enables the user to create
+events for a specific calendar. Currently =org-gcal= does not support
+synchronization of multiple Google accounts.
+
+#+NAME: org-gcal-cals
+#+BEGIN_SRC emacs-lisp
+  (setq org-gcal-file-alist '(("your_first_calendar_id@gmail.com" . "/path/to/first_schedule_file.org")
+                              ("your_second_calendar_id@gmail.com" . "/path/to/second_schedule_file.org")))
+#+END_SRC
+
+You need to include the calendar event files in =org-agenda=, do so by adding
+the paths to the files to the =org-agenda-files= variable.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files
+        (quote ("/path/to/first_schedule_file.org" "/path/to/second_schedule_file.org")))
+#+END_SRC
+
+You can create new calendar events from any Emacs buffer with =org-capture=.
+This layer provides convenient accessory functions that automatically
+synchronize the new event to Google calendar, [[*Schedule events with org-capture][see below]].
+
+The *first time* you run a one way fetch (Gcal to org) via =SPC a G f= or a two
+way sync (Gcal & Org) via =SPC a G s= you will be prompted to login to your
+Google account to retrieve your created access token and paste the token into
+the minibuffer. The token will be persisted across subsequent commands and emacs
+sessions.
+
+**** Miscellaneous org-gcal settings
+Here are listed further possible tweaks. Remember you can run =SPC h d v= with
+the following variables for full documentation. The [[https://github.com/myuhe/org-gcal.el][org-gcal]] README contains
+more information.
+#+begin_src emacs-lisp
+  (defun dotspacemacs/user-config ()
+    ;;...
+    ;; Nests repeating weekly events
+    (setq org-gcal-recurring-events-mode 'nested)
+    ;; Turn off auto-archive
+    (setq org-gcal-auto-archive nil)
+    ;; Fetch events 90 days after, and 0 before
+    (setq org-gcal-down-days '90)
+    (setq org-gcal-up-days '0))
+#+end_src
+** Configure calfw
+You can configure how the calfw calendar buffer should be displayed by altering
+the variable =calfw-calendar-window-setup=. When you close the calendar view
+this layer tries to restore the previous window configuration, if you would like
+to disable this behavior set =calfw-restore-windows-after-quit= to nil.
+
+Calfw lets you customize the name of the months and days by altering the following arrays.
+#+BEGIN_SRC emacs-lisp
+  ;; Month
+  (setq calendar-month-name-array
+    ["January" "February" "March"     "April"   "May"      "June"
+     "July"    "August"   "September" "October" "November" "December"])
+
+  ;; Week days
+  (setq calendar-day-name-array
+        ["Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday"])
+#+END_SRC
+
+You can also change which day the week begins with the following variable.
+#+BEGIN_SRC emacs-lisp
+  ;; First day of the week
+  (setq calendar-week-start-day 1) ; 0:Sunday, 1:Monday
+#+END_SRC
+
+In Calfw calendar view you can capture TODOs or events. To do so you need to
+bind a [[http://orgmode.org/manual/Capture-templates.html][org-capture template]] to the variable =cfw:org-capture-template=. The
+following is an example template for creating a calendar event that works with
+the =google-calendar/sync-cal-after-capture= function.
+#+NAME: org-event-schedule
+#+BEGIN_SRC emacs-lisp
+  (setq cfw:org-capture-template '("a" "Set Appointment" entry (file  "path/to/a/schedule/file.org" )
+                                   "* %?
+  :PROPERTIES:
+  :LOCATION: %^{LOCATION|TBD}
+  :calendar-id: %^{calendar-id|example@gmail.com}
+  :END:
+  :org-gcal:
+  %^T
+  :END:")) ;; Text placed in the :org-gcal: drawer will be synced to Google Calendar
+#+END_SRC
+
+** Schedule events with org-capture
+There are many ways to use this layer in conjunction with =org-agenda=, for
+instance you can capture tasks directly to the schedule org file for instance by
+using the template described [[org-event-schedule][above]].
+
+To automatically convert the new event to a google calendar event you need to
+also add the following function to the =org-capture-after-finalize-hook=. The
+function checks if the capture entry is put in one of the calendar org files,
+and if so creates an google calendar event of the file.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-capture-after-finalize-hook 'google-calendar/sync-cal-after-capture)
+#+END_SRC
+
+For a calendar event to be considered valid by =org-gcal= it needs. For an
+example, see [[org-event-schedule][the capture template above]]
+ - A header
+ - A non-interactive timestamp or time range.
+
+* Key bindings
+Spacemacs leader key shortcuts.
+| Key Binding | Description         |
+|-------------+---------------------|
+| ~SPC a G f~ | Fetch new events    |
+| ~SPC a G s~ | Sync calendar       |
+| ~SPC a G r~ | Request OAuth token |
+| ~SPC a G c~ | Open calendar view  |
+
+Changing the calendar view.
+| Key Binding | Description                 |
+|-------------+-----------------------------|
+| ~D~         | Day view                    |
+| ~W~         | Week view                   |
+| ~T~         | Two weeks view              |
+| ~M~         | Month view                  |
+
+Navigation in calendar view.
+| Key Binding | Description                |
+|-------------+----------------------------|
+| ~l~         | Go right                   |
+| ~h~         | Go left                    |
+| ~k~         | Go up                      |
+| ~j~         | Go down                    |
+| ~n~         | Next week                  |
+| ~p~         | Previous week              |
+| ~N~         | Next month                 |
+| ~P~         | Previous month             |
+| ~t~         | Today                      |
+| ~g~         | Absolute date (YYYY/MM/DD) |
+| ~TAB~       | Next item in a day         |
+
+Actions you can perform in calendar view.
+| Key Binding | Description                 |
+|-------------+-----------------------------|
+| ~c~         | Capture new event           |
+| ~v~         | Pop-up detail agenda buffer |
+| ~r~         | Refresh buffer              |
+| ~RET~       | Jump                        |
+| ~q~         | Quit calendar view          |
+
+* Footnotes
+[fn:1] https://github.com/mhkc/google-calendar-layer/issues/1
+
+[fn:2] [[https://github.com/myuhe/org-gcal.el/issues/47][myuhe/org-gcal.el#47 Support loading credentials from .authinfo]]
