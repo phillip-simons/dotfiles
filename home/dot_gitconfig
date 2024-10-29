@@ -1,0 +1,15 @@
+[user]
+	name = Phillip Simons
+	email = phillip@book.io
+[maintenance]
+	repo = /home/phillip/code/booktoken-web
+[init]
+	defaultBranch = main
+[core]
+	editor = emacsclient -c -a emacs
+[color]
+	ui = auto
+[gpg]
+	format = ssh
+[github]
+	user = phillip-simons
