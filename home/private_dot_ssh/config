@@ -1,5 +1,4 @@
-IdentityFile ~/.ssh/id_github
-AddKeysToAgent  yes
+IdentityFile /home/phillip/.ssh/id_yarrow
 UpdateHostKeys  yes
 ServerAliveCountMax 6
 ServerAliveInterval 300
@@ -28,7 +27,6 @@ Host media-host personal-host pve1-network pve2-network manager
   IdentityFile ~/.ssh/id_default
 
 Host github.com
-  User git
-  Hostname github.com
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/id_github
+    HostName github.com
+    User git
+    IdentitiesOnly yes
