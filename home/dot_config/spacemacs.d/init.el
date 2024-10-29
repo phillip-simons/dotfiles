@@ -53,8 +53,7 @@ This function should only modify configuration layer settings."
      (better-defaults :variables
                       better-defaults-move-to-end-of-code-first t)
      bibtex
-     (colors :variables
-             colors-colorize-identifiers 'variables)
+     colors
      csv
      dap
      django
