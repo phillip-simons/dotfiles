@@ -13,4 +13,5 @@
  '(
    pez-org
    pez-email
+   pez-elfeed
    ))
