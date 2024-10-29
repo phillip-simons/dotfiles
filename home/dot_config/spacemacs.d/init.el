@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(systemd
+   '(markdown
+     systemd
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -59,7 +60,9 @@ This function should only modify configuration layer settings."
      django
      (docker :variables
              docker-dockerfile-backend 'lsp)
-     (elfeed :variables rmh-elfeed-org-files (list "~/.config/spacemacs.d/private/elfeed1.org"))
+     (elfeed :variables
+             elfeed-enable-web-interface t
+             rmh-elfeed-org-files (list "~/.config/spacemacs.d/private/elfeed1.org"))
      epub
      emacs-lisp
      erc
@@ -69,6 +72,7 @@ This function should only modify configuration layer settings."
           git-enable-magit-todos-plugin t
           spacemacs--git-blame-ts-full-hint-toggle t)
      github-copilot
+     gnus
      helm
      helpful
      (html :variables
@@ -140,7 +144,7 @@ This function should only modify configuration layer settings."
             shell-default-full-span nil
             shell-default-position 'bottom
             shell-default-height 30
-            shell-default-shell 'vterm)
+            shell-default-shell 'multi-vterm)
      (shell-scripts :variables
                     shell-scripts-backend 'lsp
                     shell-scripts-format-on-save t)
@@ -753,6 +757,10 @@ before packages are loaded."
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
 
+  (setq gnus-secondary-select-methods
+        '(
+          (nntp "news.gwene.org")
+          ))
   (setq org-gcal-client-id (auth-source-pick-first-password
                             :host "book.gcal.api"
                             :user "clientid"))
@@ -821,31 +829,12 @@ This function is called at the very end of Spacemacs initialization."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(ignored-local-variable-values '((time-stamp-active . t)))
-   '(org-modules
-     '(ol-bbdb ol-bibtex org-crypt ol-docview ol-doi ol-eww ol-gnus org-habit ol-info ol-irc ol-mhe org-protocol ol-rmail ol-w3m))
-   '(org-project-capture-projects-file "~/org/20-29_Work/21_Projects/21.03_todos.org")
-   '(org-refile-targets '((nil :maxlevel . 2)))
    '(package-selected-packages
-     '(elfeed-goodies elfeed-org elfeed mu4easy mu4e-column-faces calfw calfw-org org-gcal request-deferred persist elnode db fakir creole web noflet company-emoji emoji-cheat-sheet-plus slack circe oauth2 websocket engine-mode nov esxml kv centaur-tabs org-fancy-priorities csv-mode ranger company-box frame-local company-quickhelp company-statistics flyspell-popup hledger-mode mwim sqlup-mode unfill ellama gptel helm-ag org-auto-tangle helm-mu org-msg org-transclusion org-wild-notifier mu4e-alert journalctl-mode systemd igist chezmoi company-restclient know-your-http-well ligature magic-latex-buffer ob-http ob-restclient ox-ssh restclient-helm restclient vmd-mode company-org-block ox-gfm treemacs-all-the-icons neotree pdf-view-restore pdf-tools dash-functional helm-bibtex org-noter org-ref ox-pandoc citeproc bibtex-completion biblio biblio-core parsebib queue org-reverse-datetree org-starter helm-pass password-store-otp password-store xref dap-mode lsp-docker bui eziam-themes farmhouse-themes fish-mode flatland-theme flatui-theme flycheck-bashate gandalf-theme gotham-theme grandshell-theme gruber-darker-theme gruvbox-theme hc-zenburn-theme helpful elisp-refs hemisu-theme heroku-theme ibuffer-projectile inkpot-theme insert-shebang ir-black-theme jazz-theme jbeans-theme jinja2-mode js-doc js2-refactor multiple-cursors json-mode json-navigator hierarchy json-reformat json-snatcher kaolin-themes kubernetes-evil kubernetes magit-popup light-soap-theme livid-mode lsp-latex consult lua-mode lush-theme madhat2r-theme majapahit-themes material-theme math-symbol-lists minimal-theme modus-themes moe-theme molokai-theme monochrome-theme monokai-theme mustang-theme naquadah-theme nav-flash noctilux-theme nodejs-repl npm-mode obsidian-theme occidental-theme oldlace-theme omtose-phellack-theme org-appear org-sticky-header organic-green-theme pacmacs persistent-scratch phoenix-dark-mono-theme phoenix-dark-pink-theme planet-theme pony-mode professional-theme purple-haze-theme railscasts-theme rebecca-theme reverse-theme seti-theme shfmt reformatter skewer-mode js2-mode smyx-theme soft-charcoal-theme soft-morning-theme soft-stone-theme solarized-theme soothe-theme autothemer spacegray-theme sql-indent subatomic-theme subatomic256-theme sublime-themes sudoku sunny-day-theme tango-2-theme tango-plus-theme tangotango-theme tao-theme toxi-theme twilight-anti-bright-theme twilight-bright-theme twilight-theme typescript-mode typit mmt ujelly-theme underwater-theme unicode-fonts ucs-utils font-utils persistent-soft pcache wakatime-mode white-sand-theme yaml-mode zen-and-art-theme zenburn-theme zonokai-emacs eat esh-help eshell-prompt-extras eshell-z helm-lsp lsp-origami origami lsp-pyright lsp-treemacs lsp-ui multi-term multi-vterm shell-pop terminal-here vterm lsp-mode auto-yasnippet company-anaconda company-web web-completion-data copilot helm-c-yasnippet helm-company company yasnippet-snippets yasnippet anaconda-mode auto-dictionary blacken code-cells cython-mode emmet-mode evil-org flycheck-pos-tip pos-tip flyspell-correct-helm flyspell-correct gh-md git-link git-messenger git-modes git-timemachine gitignore-templates gnuplot helm-css-scss helm-git-grep helm-ls-git helm-org-rifle helm-pydoc impatient-mode htmlize simple-httpd importmagic epc ctable concurrent deferred live-py-mode markdown-toc nose org-cliplink org-contrib org-download org-mime org-pomodoro alert log4e gntp org-present org-projectile org-project-capture org-category-capture org-rich-yank orgit-forge orgit forge yaml ghub closql emacsql treepy pip-requirements pipenv load-env-vars pippel poetry prettier-js pug-mode py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv ron-mode rustic xterm-color markdown-mode rust-mode sass-mode haml-mode scss-mode slim-mode smeargle sphinx-doc tagedit toml-mode treemacs-magit magit magit-section git-commit with-editor transient web-beautify web-mode yapfify ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-comint google-translate golden-ratio flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile all-the-icons aggressive-indent ace-link ace-jump-helm-line))
-   '(paradox-github-token t)
-   '(spacemacs-large-file-modes-list
-     '(archive-mode tar-mode jka-compr git-commit-mode image-mode doc-view-mode doc-view-mode-maybe ebrowse-tree-mode pdf-view-mode tags-table-mode fundamental-mode nov-mode))
-   '(spacemacs-spaceline-additional-segments '((new-version :when active) (display-time))))
+     '(valign yasnippet-snippets yapfify yaml-mode ws-butler writeroom-mode winum which-key web-mode web-beautify wakatime-mode vundo volatile-highlights vmd-mode vim-powerline vi-tilde-fringe unicode-fonts unfill undo-fu-session undo-fu typit typescript-mode treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toml-mode toc-org texfrag terminal-here term-cursor tagedit systemd symon symbol-overlay sudoku string-edit-at-point sqlup-mode sql-indent sphinx-doc spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc smeargle slim-mode slack shfmt shell-pop scss-mode sass-mode rustic ron-mode restclient-helm restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters quickrun pytest pylookup pyenv-mode pydoc py-isort pug-mode prettier-js pony-mode poetry pippel pipenv pip-requirements persistent-scratch pdf-view-restore password-store-otp password-generator paradox pacmacs ox-ssh ox-gfm overseer orgit-forge org-wild-notifier org-vcard org-transclusion org-superstar org-starter org-rich-yank org-reverse-datetree org-ref org-projectile org-present org-pomodoro org-mime org-gcal org-fancy-priorities org-download org-contrib org-contacts org-cliplink org-auto-tangle org-appear open-junk-file ob-restclient ob-http nyan-mode npm-mode nov nose nodejs-repl nix-mode nav-flash nameless mwim multi-vterm multi-term multi-line mu4easy mixed-pitch markdown-toc magit-todos magic-latex-buffer macrostep lsp-ui lsp-pyright lsp-origami lsp-latex lorem-ipsum livid-mode live-py-mode ligature kubernetes-evil json-reformat json-navigator json-mode js2-refactor js-doc journalctl-mode jinja2-mode inspector insert-shebang info+ indent-guide importmagic impatient-mode igist ibuffer-projectile hybrid-mode hungry-delete holy-mode hledger-mode highlight-parentheses highlight-numbers highlight-indentation hide-comnt helpful helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-pass helm-org-rifle helm-org helm-nixos-options helm-mu helm-mode-manager helm-make helm-lsp helm-ls-git helm-git-grep helm-descbinds helm-css-scss helm-company helm-comint helm-c-yasnippet helm-bibtex helm-ag gptel google-translate golden-ratio gnuplot gitignore-templates git-timemachine git-modes git-messenger git-link gh-md flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-ledger flycheck-elsa flycheck-bashate flx-ido fish-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-tex evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-tweet erc-social-graph erc-image erc-hl-nicks engine-mode emr emoji-cheat-sheet-plus emmet-mode ellama elisp-slime-nav elisp-demos elisp-def elfeed-web elfeed-org elfeed-goodies eat dumb-jump drag-stuff dotenv-mode doom-themes dockerfile-mode docker disable-mouse dired-quick-sort diminish diff-hl devdocs define-word dash-functional dap-mode cython-mode csv-mode copilot company-web company-statistics company-shell company-restclient company-reftex company-nixos-options company-math company-lua company-emoji company-box company-auctex company-ansible company-anaconda column-enforce-mode color-identifiers-mode code-review code-cells clean-aindent-mode centered-cursor-mode calfw-org calfw browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile ansible-doc ansible all-the-icons aggressive-indent ace-link ace-jump-helm-line 2048-game)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
-   '(default ((t (:background nil))))
-   '(fixed-pitch ((t (:family "JetBrains Mono Nerd Font"))))
-   '(org-level-1 ((t (:inherit (outline-1 variable-pitch) :extend nil))))
-   '(org-level-2 ((t (:inherit (outline-2 variable-pitch) :extend nil))))
-   '(org-level-3 ((t (:inherit (outline-3 variable-pitch) :extend nil))))
-   '(org-level-4 ((t (:inherit (outline-4 variable-pitch) :extend nil))))
-   '(org-level-5 ((t (:inherit (outline-5 variable-pitch) :extend nil))))
-   '(org-level-6 ((t (:inherit (outline-6 variable-pitch) :extend nil))))
-   '(org-level-7 ((t (:inherit (outline-7 variable-pitch) :extend nil))))
-   '(org-level-8 ((t (:inherit (outline-8 variable-pitch) :extend nil))))
-   '(variable-pitch ((t (:weight regular :family "Inter")))))
+   )
   )
