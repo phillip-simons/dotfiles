@@ -785,6 +785,7 @@ before packages are loaded."
                    :stream t
                    :models '("codellama:latest")))
 
+  (setq browse-url-browser-function 'eww-browse-url)
   (setq auth-sources '("~/.authinfo.gpg"))
 
   (setq wakatime-api-key
