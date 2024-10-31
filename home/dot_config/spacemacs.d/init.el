@@ -32,7 +32,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(markdown
+   '(graphviz
+     markdown
      systemd
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -49,6 +50,7 @@ This function should only modify configuration layer settings."
                       auto-completion-minimum-prefix-length 1
                       auto-completion-return-key-behavior nil
                       auto-completion-tab-key-behavior 'complete
+                      auto-completion-private-snippets-directory "~/.config/spacemacs.d/snippets"
                       auto-completion-use-company-box t)
      (better-defaults :variables
                       better-defaults-move-to-end-of-code-first t)
@@ -64,7 +66,16 @@ This function should only modify configuration layer settings."
              rmh-elfeed-org-files (list "~/.config/spacemacs.d/private/elfeed1.org"))
      epub
      emacs-lisp
-     erc
+     (erc :variables
+          erc-server-list
+          '(("irc.libera.chat"
+             :port "6697"
+             :ssl t
+             :nick "phillips")
+            ("irc.myanonamouse.net"
+             :port "6697"
+             :ssl t
+             :nick "alexandriaps")))
      eww
      games
      (git :variables
@@ -804,8 +815,10 @@ before packages are loaded."
             :user "phillip@book.io^cookie")
    :subscribed-channels '(general dev dev-backend dev-status inception mint-and-print random office tequila-mockingbird))
   )
+(setq erc-autojoin-channels-alist
+      '(("Libera.Chat" "#systemcrafters")
+        ("MYANONAMOUSE" "#am-members" "#anonamouse.net")))
 (url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
-
 (with-eval-after-load 'evil
   ;; Disable arrow keys in normal and visual modes
   (define-key evil-normal-state-map (kbd "<left>") 'ignore)
@@ -830,7 +843,7 @@ This function is called at the very end of Spacemacs initialization."
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(package-selected-packages
-     '(valign yasnippet-snippets yapfify yaml-mode ws-butler writeroom-mode winum which-key web-mode web-beautify wakatime-mode vundo volatile-highlights vmd-mode vim-powerline vi-tilde-fringe unicode-fonts unfill undo-fu-session undo-fu typit typescript-mode treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toml-mode toc-org texfrag terminal-here term-cursor tagedit systemd symon symbol-overlay sudoku string-edit-at-point sqlup-mode sql-indent sphinx-doc spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc smeargle slim-mode slack shfmt shell-pop scss-mode sass-mode rustic ron-mode restclient-helm restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters quickrun pytest pylookup pyenv-mode pydoc py-isort pug-mode prettier-js pony-mode poetry pippel pipenv pip-requirements persistent-scratch pdf-view-restore password-store-otp password-generator paradox pacmacs ox-ssh ox-gfm overseer orgit-forge org-wild-notifier org-vcard org-transclusion org-superstar org-starter org-rich-yank org-reverse-datetree org-ref org-projectile org-present org-pomodoro org-mime org-gcal org-fancy-priorities org-download org-contrib org-contacts org-cliplink org-auto-tangle org-appear open-junk-file ob-restclient ob-http nyan-mode npm-mode nov nose nodejs-repl nix-mode nav-flash nameless mwim multi-vterm multi-term multi-line mu4easy mixed-pitch markdown-toc magit-todos magic-latex-buffer macrostep lsp-ui lsp-pyright lsp-origami lsp-latex lorem-ipsum livid-mode live-py-mode ligature kubernetes-evil json-reformat json-navigator json-mode js2-refactor js-doc journalctl-mode jinja2-mode inspector insert-shebang info+ indent-guide importmagic impatient-mode igist ibuffer-projectile hybrid-mode hungry-delete holy-mode hledger-mode highlight-parentheses highlight-numbers highlight-indentation hide-comnt helpful helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-pass helm-org-rifle helm-org helm-nixos-options helm-mu helm-mode-manager helm-make helm-lsp helm-ls-git helm-git-grep helm-descbinds helm-css-scss helm-company helm-comint helm-c-yasnippet helm-bibtex helm-ag gptel google-translate golden-ratio gnuplot gitignore-templates git-timemachine git-modes git-messenger git-link gh-md flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-ledger flycheck-elsa flycheck-bashate flx-ido fish-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-tex evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-tweet erc-social-graph erc-image erc-hl-nicks engine-mode emr emoji-cheat-sheet-plus emmet-mode ellama elisp-slime-nav elisp-demos elisp-def elfeed-web elfeed-org elfeed-goodies eat dumb-jump drag-stuff dotenv-mode doom-themes dockerfile-mode docker disable-mouse dired-quick-sort diminish diff-hl devdocs define-word dash-functional dap-mode cython-mode csv-mode copilot company-web company-statistics company-shell company-restclient company-reftex company-nixos-options company-math company-lua company-emoji company-box company-auctex company-ansible company-anaconda column-enforce-mode color-identifiers-mode code-review code-cells clean-aindent-mode centered-cursor-mode calfw-org calfw browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile ansible-doc ansible all-the-icons aggressive-indent ace-link ace-jump-helm-line 2048-game)))
+     '(graphviz-dot-mode rcirc-color rcirc-notify telega valign yasnippet-snippets yapfify yaml-mode ws-butler writeroom-mode winum which-key web-mode web-beautify wakatime-mode vundo volatile-highlights vmd-mode vim-powerline vi-tilde-fringe unicode-fonts unfill undo-fu-session undo-fu typit typescript-mode treemacs-projectile treemacs-persp treemacs-magit treemacs-icons-dired treemacs-evil toml-mode toc-org texfrag terminal-here term-cursor tagedit systemd symon symbol-overlay sudoku string-edit-at-point sqlup-mode sql-indent sphinx-doc spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline space-doc smeargle slim-mode slack shfmt shell-pop scss-mode sass-mode rustic ron-mode restclient-helm restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters quickrun pytest pylookup pyenv-mode pydoc py-isort pug-mode prettier-js pony-mode poetry pippel pipenv pip-requirements persistent-scratch pdf-view-restore password-store-otp password-generator paradox pacmacs ox-ssh ox-gfm overseer orgit-forge org-wild-notifier org-vcard org-transclusion org-superstar org-starter org-rich-yank org-reverse-datetree org-ref org-projectile org-present org-pomodoro org-mime org-gcal org-fancy-priorities org-download org-contrib org-contacts org-cliplink org-auto-tangle org-appear open-junk-file ob-restclient ob-http nyan-mode npm-mode nov nose nodejs-repl nix-mode nav-flash nameless mwim multi-vterm multi-term multi-line mu4easy mixed-pitch markdown-toc magit-todos magic-latex-buffer macrostep lsp-ui lsp-pyright lsp-origami lsp-latex lorem-ipsum livid-mode live-py-mode ligature kubernetes-evil json-reformat json-navigator json-mode js2-refactor js-doc journalctl-mode jinja2-mode inspector insert-shebang info+ indent-guide importmagic impatient-mode igist ibuffer-projectile hybrid-mode hungry-delete holy-mode hledger-mode highlight-parentheses highlight-numbers highlight-indentation hide-comnt helpful helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-pass helm-org-rifle helm-org helm-nixos-options helm-mu helm-mode-manager helm-make helm-lsp helm-ls-git helm-git-grep helm-descbinds helm-css-scss helm-company helm-comint helm-c-yasnippet helm-bibtex helm-ag gptel google-translate golden-ratio gnuplot gitignore-templates git-timemachine git-modes git-messenger git-link gh-md flyspell-popup flyspell-correct-helm flycheck-pos-tip flycheck-package flycheck-ledger flycheck-elsa flycheck-bashate flx-ido fish-mode fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-tex evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-ledger evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help erc-yt erc-view-log erc-tweet erc-social-graph erc-image erc-hl-nicks engine-mode emr emoji-cheat-sheet-plus emmet-mode ellama elisp-slime-nav elisp-demos elisp-def elfeed-web elfeed-org elfeed-goodies eat dumb-jump drag-stuff dotenv-mode doom-themes dockerfile-mode docker disable-mouse dired-quick-sort diminish diff-hl devdocs define-word dash-functional dap-mode cython-mode csv-mode copilot company-web company-statistics company-shell company-restclient company-reftex company-nixos-options company-math company-lua company-emoji company-box company-auctex company-ansible company-anaconda column-enforce-mode color-identifiers-mode code-review code-cells clean-aindent-mode centered-cursor-mode calfw-org calfw browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile ansible-doc ansible all-the-icons aggressive-indent ace-link ace-jump-helm-line 2048-game)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.

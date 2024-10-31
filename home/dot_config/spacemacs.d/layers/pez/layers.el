@@ -14,4 +14,5 @@
    pez-org
    pez-email
    pez-elfeed
+   pez-telegram
    ))
