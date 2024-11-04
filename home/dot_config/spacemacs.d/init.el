@@ -75,6 +75,10 @@ This function should only modify configuration layer settings."
             ("irc.myanonamouse.net"
              :port "6697"
              :ssl t
+             :nick "alexandriaps")
+            ("irc.orpheus.network"
+             :port 7000
+             :ssl t
              :nick "alexandriaps")))
      eww
      games
