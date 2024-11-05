@@ -82,5 +82,4 @@ Each entry is either:
       "o"  'elfeed-load-opml
       "w"  'elfeed-web-start
       "W"  'elfeed-web-stop
-      "t"  'helm-elfeed-search-for-unread-tag
-      )))
+      "t"  'helm-elfeed-search-for-unread-tag)))
