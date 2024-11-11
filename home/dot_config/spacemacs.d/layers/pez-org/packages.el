@@ -185,6 +185,7 @@ Each entry is either:
           )
     :config
     (setq org-hide-emphasis-markers t)
+    (setq org-use-sub-superscripts "{}")
     (setq org-agenda-window-setup (quote current-window))
     (setq org-agenda-files
           (append (directory-files-recursively "~/org/" "\.org$")

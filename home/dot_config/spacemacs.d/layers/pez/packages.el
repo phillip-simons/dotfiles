@@ -42,7 +42,8 @@
 
 (defconst pez-packages
   '(igist
-    tramp)
+    tramp
+    beacon)
   "The list of Lisp packages required by the pez layer.
 
 Each entry is either:
@@ -84,4 +85,10 @@ Each entry is either:
     (setq tramp-default-method "ssh"
           tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
     )
+  )
+(defun pez/init-beacon ()
+  (use-package beacon
+    :config
+    (setq-default beacon-mode t)
+    :diminish)
   )

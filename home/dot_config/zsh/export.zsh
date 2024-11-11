@@ -9,13 +9,10 @@ PERL_MB_OPT="--install_base \"/home/phillip/perl5\""
 export PERL_MB_OPT
 PERL_MM_OPT="INSTALL_BASE=/home/phillip/perl5"
 export PERL_MM_OPT
-# cargo bin
-export PATH="$PATH:$HOME/.cargo/bin"
 # sccache settings
 export SCCACHE_CACHE_SIZE=100G
 export CMAKE_C_COMPILER_LAUNCHER=sccache
 export CMAKE_CXX_COMPILER_LAUNCHER=sccache
-
 export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 export LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
