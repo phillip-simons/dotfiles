@@ -95,6 +95,7 @@ no_self_update = true
 [commands]
 # "Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 # "Custom command using interactive shell (unix)" = "-i vim_upgrade"
+"Doom Upgrade" = "~/.config/doom-emacs/bin/doom upgrade --force"
 
 
 [python]
@@ -142,7 +143,7 @@ no_self_update = true
 arch_package_manager = "yay"
 
 # Arguments to pass yay (or paru) when updating packages
-yay_arguments = "--nodevel"
+# yay_arguments = "--nodevel"
 
 # Arguments to pass dnf when updating packages
 # dnf_arguments = "--refresh"
@@ -186,8 +187,8 @@ max_concurrency = 5
 
 # Additional git repositories to pull
 repos = [
-    "~/.config/emacs/",
-    "~/.config/spacemacs"
+    "/home/phillip/.config/emacs",
+    "/home/phillip/.config/spacemacs",
 ]
 
 # Don't pull the predefined git repos
