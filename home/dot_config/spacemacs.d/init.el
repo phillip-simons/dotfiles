@@ -842,6 +842,9 @@ This function is called at the very end of Spacemacs initialization."
    ;; If you edit it by hand, you could mess it up, so be careful.
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
+   '(beacon-blink-when-focused t)
+   '(beacon-blink-when-point-moves-vertically 8)
+   '(beacon-mode t)
    '(browse-url-browser-function 'browse-url-default-browser)
    '(browse-url-generic-program "/usr/bin/xdg-open")
    '(eyebrowse-mode t)
