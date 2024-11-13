@@ -766,6 +766,24 @@ before packages are loaded."
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
 
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+                                        :buffer nil
+                                        :command '("wl-copy" "-f" "-n")
+                                        :connection-type 'pipe
+                                        :noquery t))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+        nil ; should return nil if we're the current paste owner
+      (shell-command-to-string "wl-paste -n | tr -d \r")))
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
+
+  (setq lsp-rust-analyzer-server-command '("/usr/bin/rust-analyzer"))
+
   (setq gnus-secondary-select-methods
         '(
           (nntp "news.gwene.org")
@@ -815,9 +833,11 @@ before packages are loaded."
    :subscribed-channels '(general dev dev-backend dev-status inception mint-and-print random office tequila-mockingbird))
   )
 (setq erc-autojoin-channels-alist
-      '(("Libera.Chat" "#systemcrafters")
-        ("MYANONAMOUSE" "#am-members" "#anonamouse.net")))
+      '(("Libera.Chat" "#systemcrafters")))
 (url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
+
+(spacemacs/set-leader-keys
+  "pV" 'projectile-run-vterm-other-window)
 
 (with-eval-after-load 'evil
   ;; Disable arrow keys in normal and visual modes
