@@ -1,3 +1,0 @@
-{#  and: true if the left and right operands are true #}
-{#   or: true if the left or right operands are true #}
-{#  not: negate a statement #}
