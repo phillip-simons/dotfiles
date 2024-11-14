@@ -812,6 +812,9 @@ before packages are loaded."
                    :stream t
                    :models '("codellama:latest")))
 
+  (add-to-list 'load-path (expand-file-name "~/.config/spacemacs.d/tera-mode"))
+  (require 'tera-mode)
+
   (setq browse-url-browser-function 'eww-browse-url)
   (setq auth-sources '("~/.authinfo.gpg"))
 
@@ -819,7 +822,8 @@ before packages are loaded."
         (let ((creds (car (auth-source-search :host "wakatime-api-key" :port nil))))
           (when creds
             (funcall (plist-get creds :secret)))))
-
+  (setq paradox-github-token
+        (cadr(auth-source-user-and-password "api.github.com" "phillip-simons^paradox")))
   ;; Slack
   (slack-register-team
    :name "$BOOK"
@@ -835,7 +839,8 @@ before packages are loaded."
 (setq erc-autojoin-channels-alist
       '(("Libera.Chat" "#systemcrafters")))
 (url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
-
+(add-hook 'rust-mode-hook (lambda ()
+                            (push '(?< . ("<" . ">")) evil-surround-pairs-alist)))
 (spacemacs/set-leader-keys
   "pV" 'projectile-run-vterm-other-window)
 

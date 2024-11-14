@@ -95,7 +95,7 @@ no_self_update = true
 [commands]
 # "Python Environment" = "~/dev/.env/bin/pip install -i https://pypi.python.org/simple -U --upgrade-strategy eager jupyter"
 # "Custom command using interactive shell (unix)" = "-i vim_upgrade"
-"Doom Upgrade" = "~/.config/doom-emacs/bin/doom upgrade --force"
+"Doom Upgrade" = "~/.config/doom-emacs/bin/doom upgrade --force && ~/.config/doom-emacs/bin/doom sync"
 
 
 [python]
