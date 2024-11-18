@@ -61,6 +61,7 @@ This function should only modify configuration layer settings."
              rmh-elfeed-org-files (list "~/.config/spacemacs.d/private/elfeed1.org"))
      epub
      emacs-lisp
+     emms
      (erc :variables
           erc-server-list
           '(("irc.libera.chat"
@@ -765,7 +766,7 @@ before packages are loaded."
   (setq dired-dwim-target t)
   (setq dired-listing-switches "-ahl --group-directories-first")
   (add-hook 'dired-mode-hook 'org-download-enable)
-
+  (add-to-list 'exec-path "/home/phillip/.local/bin")
   (setq wl-copy-process nil)
   (defun wl-copy (text)
     (setq wl-copy-process (make-process :name "wl-copy"
