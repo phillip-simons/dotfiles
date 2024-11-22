@@ -873,6 +873,7 @@ This function is called at the very end of Spacemacs initialization."
    '(beacon-mode t)
    '(browse-url-browser-function 'browse-url-default-browser)
    '(browse-url-generic-program "/usr/bin/xdg-open")
+   '(emms-repeat-playlist t)
    '(eyebrowse-mode t)
    '(eyebrowse-new-workspace 'spacemacs//window-purpose-new-workspace)
    '(eyebrowse-wrap-around t)
