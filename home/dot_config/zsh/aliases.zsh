@@ -145,6 +145,9 @@ alias dt='cd $HOME/Desktop'     # navigate to Desktop
 # Aliases for common, but unused programs
 alias neofetch='fastfetch'
 
+# rebind 'gs' from ghostscript to 'git status'
+alias gs="git status"
+
 # Restart Emacs server if not running.
 alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon ; /usr/bin/emacs --with-profile doom --daemon" # restart Emacs server
 
