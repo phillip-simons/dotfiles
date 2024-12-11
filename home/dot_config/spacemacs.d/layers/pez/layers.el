@@ -2,8 +2,8 @@
 ;;
 ;; Copyright (c) 2024 phillip-simons
 ;;
-;; Author: Claude <yunleiqi@gmail.com>
-;; URL: https://github.com/Claude-Ray/spacemacs.d
+;; Author: Phillip Simons <phillip@simons.gg>
+;; URL: https://github.com/phillip-simons/dotfiles
 ;;
 ;; This file is not part of GNU Emacs.
 ;;

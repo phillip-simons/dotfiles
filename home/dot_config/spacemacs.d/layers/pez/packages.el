@@ -43,7 +43,8 @@
 (defconst pez-packages
   '(igist
     tramp
-    beacon)
+    beacon
+    evil-fringe-mark)
   "The list of Lisp packages required by the pez layer.
 
 Each entry is either:
@@ -91,4 +92,11 @@ Each entry is either:
     :config
     (setq-default beacon-mode t)
     :diminish)
+  )
+(defun pez/init-evil-fringe-mark ()
+  (use-package evil-fringe-mark
+    :config
+    (setq-default evil-fringe-mark-show-special t)
+    (global-evil-fringe-mark-mode)
+    )
   )
