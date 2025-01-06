@@ -20,3 +20,4 @@ export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH"
 export DIRENV_LOG_FORMAT=
 
 export RIPGREP_CONFIG_PATH=$XDG_CONFIG_HOME/ripgrep/ripgrep.conf
+export GNUPGHOME=$XDG_CONFIG_HOME/gnupg

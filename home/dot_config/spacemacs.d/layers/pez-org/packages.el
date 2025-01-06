@@ -85,7 +85,7 @@ Each entry is either:
   )
 
 (defun pez-org/init-mixed-pitch ()
-  (use-package mixted-pitch
+  (use-package mixed-pitch
     :defer t
     :hook (org-mode . mixed-pitch-mode)
     :diminish mixed-pitch-mode)
@@ -101,7 +101,7 @@ Each entry is either:
     (setq org-fancy-priorities-list `(,(all-the-icons-faicon "flag"     :height 1.1 :v-adjust 0.0)
                                       ,(all-the-icons-faicon "arrow-up" :height 1.1 :v-adjust 0.0)
                                       ,(all-the-icons-faicon "square"   :height 1.1 :v-adjust 0.0)
-                                      ,(all-the-icons-faicon "bed" :height 1.1 :v-adjust 0.0)
+                                      ,(all-the-icons-faicon "bed"      :height 1.1 :v-adjust 0.0)
                                       ))
     (setq org-priority-faces
           '((?A :foreground "#ff6c6b" :weight bold)
@@ -134,53 +134,54 @@ Each entry is either:
 
     (setq org-tag-alist '(
                           ;; Meeting types
-                          (:startgroup . nil)
-                          ("team_meeting" . ?t)
-                          ("1on1" . ?1)
-                          ("all_hands" . ?h)
-                          ("sync" . ?s)
-                          (:endgroup . nil)
+                          (:startgroup      . nil)
+                          ("team_meeting"   . ?t)
+                          ("1on1"           . ?1)
+                          ("all_hands"      . ?h)
+                          ("sync"           . ?s)
+                          (:endgroup        . nil)
 
                           ;; Code TODOs tags
-                          ("QA" . ?q)
-                          ("backend" . ?k)
-                          ("broken_code" . ?c)
+                          ("QA"             . ?q)
+                          ("backend"        . ?k)
+                          ("broken_code"    . ?c)
                           ("infrastructure" . ?i)
 
                           ;; Special tags
-                          ("CRITICAL" . ?x)
-                          ("obstacle" . ?o)
+                          ("CRITICAL"       . ?x)
+                          ("obstacle"       . ?o)
 
                           ;; Meeting tags
-                          ("general" . ?g)
-                          ("meeting" . ?m)
-                          ("misc" . ?z)
-                          ("planning" . ?n)
+                          ("general"        . ?g)
+                          ("meeting"        . ?m)
+                          ("misc"           . ?z)
+                          ("planning"       . ?n)
 
                           ;; Work Log Tags
                           ("accomplishment" . ?a)
 
                           ;; Personal tags
-                          ("hobby" . ?h)
-                          ("personal" . ?p)
+                          ("hobby"          . ?h)
+                          ("personal"       . ?p)
 
                           ;; Organization
-                          (:startgroup . nil)
-                          ("directory" . ?d)
-                          ("file" . ?f)
-                          ("link" . ?n)
-                          (:endgroup . nil)
+                          (:startgroup      . nil)
+                          ("directory"      . ?d)
+                          ("file"           . ?f)
+                          ("link"           . ?n)
+                          (:endgroup        . nil)
                           ))
 
     ;; Tag colors
     (setq org-tag-faces
           '(
-            ("planning"  . (:foreground "mediumPurple1" :weight bold))
-            ("backend"   . (:foreground "royalblue1"    :weight bold))
-            ("frontend"  . (:foreground "forest green"  :weight bold))
-            ("QA"        . (:foreground "sienna"        :weight bold))
-            ("meeting"   . (:foreground "yellow1"       :weight bold))
-            ("CRITICAL"  . (:foreground "red1"          :weight bold))
+            ("planning"       . (:foreground "mediumPurple1" :weight bold))
+            ("backend"        . (:foreground "royalblue1"    :weight bold))
+            ("frontend"       . (:foreground "forest green"  :weight bold))
+            ("infrastructure" . (:foreground "violet red"    :weight bold))
+            ("QA"             . (:foreground "sienna"        :weight bold))
+            ("meeting"        . (:foreground "yellow1"       :weight bold))
+            ("CRITICAL"       . (:foreground "red1"          :weight bold))
             )
           )
     :config

@@ -29,4 +29,5 @@ Host media-host personal-host pve1-network pve2-network manager
 Host github.com
     HostName github.com
     User git
+    IdentityFile ~/.ssh/id_github
     IdentitiesOnly yes

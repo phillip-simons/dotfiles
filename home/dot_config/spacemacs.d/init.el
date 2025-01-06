@@ -199,9 +199,9 @@ This function should only modify configuration layer settings."
                wakatime-cli-path "/usr/bin/wakatime")
 
      (yaml :variables yaml-enable-lsp t)
+     ;; custom layers
      pez
      google-calendar
-     ;; custom layers
      )
 
 
@@ -838,32 +838,32 @@ before packages are loaded."
             :host "book.slack.com"
             :user "phillip@book.io^cookie")
    :subscribed-channels '(general dev dev-backend dev-status inception mint-and-print random office tequila-mockingbird))
+  (setq erc-autojoin-channels-alist
+        '(("Libera.Chat" "#systemcrafters")))
+  (url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
+
+  (spacemacs/set-leader-keys
+    "pV" 'projectile-run-vterm-other-window
+    "ps" 'spacemacs/helm-project-smart-do-search)
+
+  (with-eval-after-load 'lsp-mode
+    (define-key lsp-mode-map (kbd "<f12>") 'lsp-find-definition)
+    (define-key lsp-mode-map (kbd "<S-f12>") 'lsp-find-references)
+    (define-key lsp-mode-map (kbd "<C-f12>") 'lsp-find-implementation))
+
+  (global-set-key (kbd "<f5>") 'revert-buffer)
+
+  (with-eval-after-load 'evil
+    ;; Disable arrow keys in normal and visual modes
+    (define-key evil-normal-state-map (kbd "<left>") 'ignore)
+    (define-key evil-normal-state-map (kbd "<right>") 'ignore)
+    (define-key evil-normal-state-map (kbd "<up>") 'ignore)
+    (define-key evil-normal-state-map (kbd "<down>") 'ignore)
+    (define-key evil-visual-state-map (kbd "<left>") 'ignore)
+    (define-key evil-visual-state-map (kbd "<right>") 'ignore)
+    (define-key evil-visual-state-map (kbd "<up>") 'ignore)
+    (define-key evil-visual-state-map (kbd "<down>") 'ignore))
   )
-(setq erc-autojoin-channels-alist
-      '(("Libera.Chat" "#systemcrafters")))
-(url-cookie-store "d" (auth-source-pick-first-password :host "book.slack.com" :user "phillip@book.io^cookie") nil ".slack.com" "/" t)
-
-(spacemacs/set-leader-keys
-  "pV" 'projectile-run-vterm-other-window
-  "ps" 'spacemacs/helm-project-smart-do-search)
-
-(with-eval-after-load 'lsp-mode
-  (define-key lsp-mode-map (kbd "<f12>") 'lsp-find-definition)
-  (define-key lsp-mode-map (kbd "<S-f12>") 'lsp-find-references)
-  (define-key lsp-mode-map (kbd "<C-f12>") 'lsp-find-implementation))
-
-(global-set-key (kbd "<f5>") 'revert-buffer)
-
-(with-eval-after-load 'evil
-  ;; Disable arrow keys in normal and visual modes
-  (define-key evil-normal-state-map (kbd "<left>") 'ignore)
-  (define-key evil-normal-state-map (kbd "<right>") 'ignore)
-  (define-key evil-normal-state-map (kbd "<up>") 'ignore)
-  (define-key evil-normal-state-map (kbd "<down>") 'ignore)
-  (define-key evil-visual-state-map (kbd "<left>") 'ignore)
-  (define-key evil-visual-state-map (kbd "<right>") 'ignore)
-  (define-key evil-visual-state-map (kbd "<up>") 'ignore)
-  (define-key evil-visual-state-map (kbd "<down>") 'ignore))
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
