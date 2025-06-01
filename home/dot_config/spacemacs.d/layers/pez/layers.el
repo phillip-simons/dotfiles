@@ -12,7 +12,4 @@
 (configuration-layer/declare-layers
  '(
    pez-org
-   pez-email
-   pez-elfeed
-   pez-telegram
    ))
