@@ -1,0 +1,21 @@
+# Doom One-inspired theme for btop
+# Colors are adapted from Doom One
+
+theme[main_bg]="#282c34"
+    theme[main_fg]="#bbc2cf"
+    theme[title]="#51afef"
+    theme[high_fg]="#46D9FF"
+    theme[low_fg]="#ECBE7B"
+    theme[menu_fg]="#5B6268"
+    theme[menu_bg]="#21242b"
+    theme[menu_sel_fg]="#bbc2cf"
+    theme[menu_sel_bg]="#2257A0"
+    theme[inactive_fg]="#5B6268"
+    theme[proc_run]="#98be65"
+    theme[proc_sleep]="#ECBE7B"
+    theme[proc_zombie]="#ff6c6b"
+    theme[proc_stop]="#c678dd"
+    theme[net_recv]="#5699AF"
+    theme[net_sent]="#4db5bd"
+    theme[graph_bg]="#1B2229"
+    theme[graph_fg]="#9ca0a4"
