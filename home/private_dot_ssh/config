@@ -1,4 +1,3 @@
-IdentityFile /home/phillip/.ssh/id_yarrow
 UpdateHostKeys  yes
 ServerAliveCountMax 6
 ServerAliveInterval 300
