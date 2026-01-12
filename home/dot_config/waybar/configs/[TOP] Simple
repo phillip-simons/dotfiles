@@ -5,6 +5,9 @@
 "include": [
   "$HOME/.config/waybar/Modules",
   "$HOME/.config/waybar/ModulesWorkspaces",
+  "$HOME/.config/waybar/ModulesCustom",
+  "$HOME/.config/waybar/ModulesGroups",
+  "$HOME/.config/waybar/UserModules",
   ],
 "layer": "top", 
 "position": "top", 
@@ -26,13 +29,14 @@
     
 "modules-center": [
 	"clock#2",
-	"custom/swaync",
+	"group/notify",
 	],
     
 "modules-right": [
 	"hyprland/window",  
 	"battery",
  	"group/audio", 
+	"custom/nightlight",
 	"custom/power",
 	],
 }
