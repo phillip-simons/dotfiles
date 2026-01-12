@@ -92,7 +92,9 @@ else
 	alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"' # fallback to wget
 fi
 
-alias grep='rg --color=auto' # colorize grep output (good for log files)
+if [ -z "$CLAUDE_SESSION_ID" ]; then
+	alias grep='rg --color=auto'
+fi
 
 # Fuzzy finder for tldr and man pages.
 alias ftldr='compgen -c | fzf | xargs tldr' # tldr page finder
