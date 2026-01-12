@@ -42,6 +42,8 @@ bashcompinit
 
 # Shell integrations
 eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+if [ -z "$CLAUDE_SESSION_ID" ]; then
+	eval "$(zoxide init --cmd cd zsh)"
+fi
 eval "$(direnv hook zsh)"
 eval "$(oh-my-posh init zsh --config ~/.config/oh-my-posh/powerlevel10k_rainbow.omp.json)"
