@@ -1,12 +1,12 @@
 # -*- shell-script -*-
 # Aliases for listing files and directories with lsd
-alias ls='lsd -al --color=always --group-directories-first'             # my preferred listing
-alias la='lsd -a --color=always --group-directories-first'              # list all files and directories
-alias ll='lsd -l --color=always --group-directories-first'              # long format listing
-alias lt='lsd -aT --color=always --group-directories-first'             # tree listing
-alias l.='lsd -al --color=always --group-directories-first ../'         # list parent directory
-alias l..='lsd -al --color=always --group-directories-first ../../'     # list 2 levels up
-alias l...='lsd -al --color=always --group-directories-first ../../../' # list 3 levels up
+alias ls='eza -al --color=always --group-directories-first'             # my preferred listing
+alias la='eza -a --color=always --group-directories-first'              # list all files and directories
+alias ll='eza -l --color=always --group-directories-first'              # long format listing
+alias lt='eza -aT --color=always --group-directories-first'             # tree listing
+alias l.='eza -al --color=always --group-directories-first ../'         # list parent directory
+alias l..='eza -al --color=always --group-directories-first ../../'     # list 2 levels up
+alias l...='eza -al --color=always --group-directories-first ../../../' # list 3 levels up
 
 # Starts the calculator with math support.
 alias bc='bc -l'
@@ -138,9 +138,10 @@ alias :q='exit' # exit command
 alias c='clear' # clear the screen
 
 # Quick navigation to specific directories.
-alias dls='cd $HOME/Downloads'  # navigate to Downloads
-alias docs='cd $HOME/Documents' # navigate to Documents
-alias dt='cd $HOME/Desktop'     # navigate to Desktop
+alias dls='cd $HOME/Downloads'          # navigate to Downloads
+alias docs='cd $HOME/Documents'         # navigate to Documents
+alias dt='cd $HOME/Desktop'             # navigate to Desktop
+alias cdb='cd $HOME/code/booktoken-web' # navigate to booktoken-web project
 
 # Aliases for common, but unused programs
 alias neofetch='fastfetch'
