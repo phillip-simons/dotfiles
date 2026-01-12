@@ -563,7 +563,7 @@
 	"exec": "checkupdates | wc -l",
 	"exec-if": "[[ $(checkupdates | wc -l) ]]",
 	"interval": 15,
-	"on-click": "if command -v topgrade &> /dev/null; then kitty -T update topgrade; else kitty -T update yay -Syu; fi && notify-send 'The system has been updated'",
+	"on-click": "if command -v arch-update &> /dev/null; then kitty -T update arch-update; else kitty -T update yay -Syu; fi && notify-send 'The system has been updated'",
 	"tooltip": true,
 	"tooltip-format": "Left Click: Update System\nArch Linux Only",
 },

@@ -15,9 +15,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 # Add in zsh plugins
 zinit light Aloxaf/fzf-tab
 zinit light MichaelAquilina/zsh-you-should-use
-zinit light chisui/zsh-nix-shell
 zinit light mass8326/zsh-chezmoi
-zinit light nix-community/nix-zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-syntax-highlighting
@@ -25,7 +23,6 @@ zinit light zsh-users/zsh-syntax-highlighting
 zinit snippet OMZP::git
 zinit snippet OMZP::sudo
 zinit snippet OMZP::archlinux
-zinit snippet OMZP::aws
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::kubectx
 zinit snippet OMZP::command-not-found
@@ -42,7 +39,6 @@ done
 
 autoload bashcompinit
 bashcompinit
-source "/home/phillip/.local/share/bash-completion/completions/am"
 
 # Shell integrations
 eval "$(fzf --zsh)"
