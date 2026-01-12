@@ -32,12 +32,7 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(vimscript
-     php
-     systemd
-     graphviz
-     ansible
-     (auto-completion :variables
+   '((auto-completion :variables
                       auto-completion-complete-with-key-sequence nil
                       auto-completion-complete-with-key-sequence-delay 0.1
                       auto-completion-enable-snippets-in-popup t
@@ -60,21 +55,7 @@ This function should only modify configuration layer settings."
              docker-dockerfile-backend 'lsp)
      epub
      emacs-lisp
-     (erc :variables
-          erc-server-list
-          '(("irc.libera.chat"
-             :port "6697"
-             :ssl t
-             :nick "phillips")
-            ("irc.myanonamouse.net"
-             :port "6697"
-             :ssl t
-             :nick "alexandriaps")
-            ("irc.orpheus.network"
-             :port 7000
-             :ssl t
-             :nick "alexandriaps")))
-     eww
+     emoji
      (git :variables
           git-enable-magit-todos-plugin t
           spacemacs--git-blame-ts-full-hint-toggle t)
@@ -92,7 +73,6 @@ This function should only modify configuration layer settings."
            json-backend 'lsp
            json-fmt-tool 'prettier
            json-fmt-on-save t)
-     kubernetes
      (latex :variables
             latex-build-command "xelatex"
             latex-enable-auto-fill t
@@ -142,7 +122,6 @@ This function should only modify configuration layer settings."
      (rust :variables
            lsp-rust-server 'rust-analyzer
            rust-format-on-save t)
-     search-engine
      (shell :variables
             shell-default-term-shell "/usr/bin/zsh"
             shell-default-full-span nil
@@ -165,6 +144,7 @@ This function should only modify configuration layer settings."
           sql-lsp-sqls-workspace-config-path 'workspace
           sql-auto-indent nil)
      syntax-checking
+     systemd
      tmux
      toml
      (treemacs :variables
@@ -187,6 +167,7 @@ This function should only modify configuration layer settings."
                                                  "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                                  "\\\\" "://"))
      version-control
+     vimscript
      (wakatime :variables
                wakatime-cli-path "/usr/bin/wakatime")
 
