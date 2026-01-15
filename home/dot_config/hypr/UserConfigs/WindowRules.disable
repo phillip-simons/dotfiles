@@ -1,0 +1,8 @@
+layerrule = blur,class:^([Rr]ofi)$
+layerrule = blur, overview
+layerrule = ignorezero, overview
+layerrule = ignorezero, <rofi>
+layerrule = unset,class:^([Rr]ofi)$
+windowrule = fullscreen,gamescope
+windowrule = noblur,gamescope
+windowrule = workspace 6 silent,^(gamescope)$
