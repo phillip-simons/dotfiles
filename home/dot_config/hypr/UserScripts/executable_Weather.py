@@ -60,7 +60,7 @@ SIMPLE_TEXT_CACHE_PATH: Path = CACHE_DIR / ".weather_cache"
 CACHE_TTL_SECONDS = int(os.getenv("WEATHER_CACHE_TTL", "300"))  # default 5 minutes
 
 # Units: metric or imperial (default metric)
-UNITS = os.getenv("WEATHER_UNITS", "metric").strip().lower()  # metric|imperial
+UNITS = os.getenv("WEATHER_UNITS", "imperial").strip().lower()  # metric|imperial
 
 # Optional manual coordinates
 ENV_LAT = os.getenv("WEATHER_LAT")

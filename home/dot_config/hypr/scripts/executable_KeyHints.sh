@@ -28,12 +28,14 @@ GDK_BACKEND=$BACKEND yad \
 " SHIFT E" "KooL Hyprland Settings Menu" "" \
 "" "" "" \
 " enter" "Terminal" "(kitty)" \
-" SHIFT enter" "DropDown Terminal" " Q to close" \
+" GRAVE" "DropDown Terminal" "(pypr toggle term)" \
 " B" "Launch Browser" "(Default browser)" \
-" A" "Desktop Overview" "(AGS - if opted to install)" \
+" A" "Desktop Overview" "(Quickshell)" \
 " D" "Application Launcher" "(rofi-wayland)" \
-" E" "Open File Manager" "(Thunar)" \
+" E" "Launch Emacs" "(emacsclient)" \
 " S" "Google Search using rofi" "(rofi)" \
+" T" "Open File Manager" "(Thunar)" \
+" Z" "Toggle Zoom" "(pypr zoom)" \
 " Q" "close active window" "(not kill)" \
 " Shift Q " "kills an active window" "(kill)" \
 " ALT mouse scroll up/down   " "Desktop Zoom" "Desktop Magnifier" \
@@ -53,10 +55,7 @@ GDK_BACKEND=$BACKEND yad \
 " CTRL SHIFT Print" "screenshot timer 10 secs " "(grim)" \
 "ALT Print" "Screenshot active window" "active window only" \
 "CTRL ALT P" "power-menu" "(wlogout)" \
-"CTRL ALT L" "screen lock" "(hyprlock)" \
-"CTRL ALT Del" "Hyprland Exit" "(NOTE: Hyprland Will exit immediately)" \
-" SHIFT F" "Fullscreen" "Toggles to full screen" \
-" CTL F" "Fake Fullscreen" "Toggles to fake full screen" \
+" F" "Fullscreen" "Toggles to full screen" \
 " ALT L" "Toggle Dwindle | Master Layout" "Hyprland Layout" \
 " SPACEBAR" "Toggle float" "single window" \
 " ALT SPACEBAR" "Toggle all windows to float" "all windows" \
