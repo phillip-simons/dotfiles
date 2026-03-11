@@ -47,6 +47,9 @@ This function should only modify configuration layer settings."
                       better-defaults-move-to-end-of-code-first t)
      bibtex
      bm
+     (claude-code :variables
+                   claude-code-ide-window-side 'right
+                   claude-code-ide-window-width 100)
      colors
      csv
      dap
@@ -59,7 +62,6 @@ This function should only modify configuration layer settings."
      (git :variables
           git-enable-magit-todos-plugin t
           spacemacs--git-blame-ts-full-hint-toggle t)
-     github-copilot
      helm
      helpful
      (html :variables
@@ -104,7 +106,6 @@ This function should only modify configuration layer settings."
           org-enable-transclusion-support t
           org-want-todo-bindings t
           org-enable-org-contacts-support t)
-     pass
      pdf
      (python
       :variables
@@ -114,9 +115,6 @@ This function should only modify configuration layer settings."
       python-format-on-save t
       python-sort-imports-on-save t
       )
-     (ranger :variables
-             ranger-override-dired 'deer
-             ranger-show-preview t)
      (restclient :variables
                  restclient-use-org t)
      (rust :variables
@@ -145,7 +143,6 @@ This function should only modify configuration layer settings."
           sql-auto-indent nil)
      syntax-checking
      systemd
-     tmux
      toml
      (treemacs :variables
                treemacs-use-git-mode 'deferred)
@@ -167,7 +164,6 @@ This function should only modify configuration layer settings."
                                                  "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
                                                  "\\\\" "://"))
      version-control
-     vimscript
      (wakatime :variables
                wakatime-cli-path "/usr/bin/wakatime")
 
@@ -245,10 +241,6 @@ It should only modify the values of Spacemacs settings."
    ;; `--insecure' which forces the value of this variable to nil.
    ;; (default t)
    dotspacemacs-elpa-https t
-
-   ;; Maximum allowed time in seconds to contact an ELPA repository.
-   ;; (default 5)
-   dotspacemacs-elpa-timeout 5
 
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    ;; (default 5)
@@ -426,10 +418,6 @@ It should only modify the values of Spacemacs settings."
    ;; Thus M-RET should work as leader key in both GUI and terminal modes.
    ;; C-M-m also should work in terminal mode, but not in GUI mode.
    dotspacemacs-major-mode-emacs-leader-key (if window-system "<M-SPC>" "C-M-m")
-
-   ;; If non-nil, J and K move lines up and down when in visual mode.
-   ;; (default nil)
-   dotspacemacs-visual-line-move-text t
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -629,7 +617,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
    ;; (default '("rg" "ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("rg" "ag" "ack" "grep")
 
    ;; The backend used for undo/redo functionality. Possible values are
    ;; `undo-fu', `undo-redo' and `undo-tree' see also `evil-undo-system'.
@@ -805,21 +793,9 @@ before packages are loaded."
   (setq erc-autojoin-channels-alist
         '(("Libera.Chat" "#systemcrafters")))
 
-  (with-eval-after-load 'copilot
-    (let ((node-path (expand-file-name "~/.asdf/installs/nodejs/20.14.0/bin")))
-      (setenv "PATH" (concat node-path ":" (getenv "PATH")))
-      (setq exec-path (cons node-path exec-path))))
   (with-eval-after-load 'company
     ;; disable inline previews
     (delq 'company-preview-if-just-one-frontend company-frontends))
-
-  (with-eval-after-load 'copilot
-    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-    (define-key copilot-completion-map (kbd "C-TAB") 'copilot-accept-completion-by-word)
-    (define-key copilot-completion-map (kbd "C-<tab>") 'copilot-accept-completion-by-word))
-
-  (add-hook 'prog-mode-hook 'copilot-mode)
 
   (spacemacs/set-leader-keys
     "pV" 'projectile-run-vterm-other-window

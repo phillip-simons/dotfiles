@@ -42,7 +42,6 @@
 
 (defconst pez-org-packages
   '(
-    dash-functional
     mixed-pitch
     org
     org-auto-tangle
@@ -188,9 +187,7 @@ Each entry is either:
     (setq org-hide-emphasis-markers t)
     (setq org-use-sub-superscripts "{}")
     (setq org-agenda-window-setup (quote current-window))
-    (setq org-agenda-files
-          (append (directory-files-recursively "~/org/" "\.org$")
-                  (directory-files-recursively "~/.config/spacemacs.d/cache/" "\.org$")))
+    (setq org-agenda-files nil)
     (setq org-log-done 'time)
     (setq org-highest-priority ?A
           org-default-priority ?B
@@ -325,9 +322,6 @@ Each entry is either:
   (spacemacs|use-package-add-hook org :post-config (require 'ox-ssh)))
 (defun pez-org/init-ox-ssh ())
 
-(defun pez-org/pre-init-dash-functional ()
-  (spacemacs|use-package-add-hook org :pre-config (require 'dash-functional)))
-(defun pez-org/init-dash-functional ())
 
 (defun pez-org/pre-init-org-reverse-datetree ()
   (spacemacs|use-package-add-hook org :pre-config (require 'org-reverse-datetree)))
