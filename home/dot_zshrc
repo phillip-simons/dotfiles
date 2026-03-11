@@ -14,18 +14,10 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 # Add in zsh plugins
 zinit light Aloxaf/fzf-tab
-zinit light MichaelAquilina/zsh-you-should-use
 zinit light mass8326/zsh-chezmoi
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-syntax-highlighting
-# Add in snippets
-zinit snippet OMZP::git
-zinit snippet OMZP::sudo
-zinit snippet OMZP::archlinux
-zinit snippet OMZP::kubectl
-zinit snippet OMZP::kubectx
-zinit snippet OMZP::command-not-found
 
 # Load completions
 autoload -Uz compinit && compinit
@@ -36,9 +28,6 @@ zinit cdreplay -q
 for file in ~/.config/zsh/**/*.zsh; do
 	[ -r "$file" ] && source "$file"
 done
-
-autoload bashcompinit
-bashcompinit
 
 # Shell integrations
 eval "$(fzf --zsh)"

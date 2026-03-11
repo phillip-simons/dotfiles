@@ -1,0 +1,5 @@
+{{- if eq .chezmoi.os "linux" }}
+. "$HOME/.asdf/asdf.sh"
+{{- else if eq .chezmoi.os "darwin" }}
+. "$(brew --prefix asdf)/libexec/asdf.sh"
+{{- end }}

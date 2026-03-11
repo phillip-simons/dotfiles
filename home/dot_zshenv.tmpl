@@ -1,0 +1,10 @@
+{{- if eq .chezmoi.os "linux" }}
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
+{{- else if eq .chezmoi.os "darwin" }}
+# macOS uses default ssh-agent; configure 1Password agent path here if needed
+{{- end }}
+
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export PATH="$PATH:$HOME/.local/bin"

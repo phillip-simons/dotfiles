@@ -1,29 +1,26 @@
 # -*- shell-script -*-
-# Aliases for listing files and directories with lsd
-alias ls='eza -al --color=always --group-directories-first'             # my preferred listing
-alias la='eza -a --color=always --group-directories-first'              # list all files and directories
-alias ll='eza -l --color=always --group-directories-first'              # long format listing
-alias lt='eza -aT --color=always --group-directories-first'             # tree listing
-alias l.='eza -al --color=always --group-directories-first ../'         # list parent directory
-alias l..='eza -al --color=always --group-directories-first ../../'     # list 2 levels up
-alias l...='eza -al --color=always --group-directories-first ../../../' # list 3 levels up
+# Aliases for listing files and directories with eza
+alias ls='eza -al --color=always --group-directories-first'
+alias la='eza -a --color=always --group-directories-first'
+alias ll='eza -l --color=always --group-directories-first'
+alias lt='eza -aT --color=always --group-directories-first'
 
 # Starts the calculator with math support.
 alias bc='bc -l'
 
 # Makes file commands verbose for better visibility.
-alias cp='cp -v' # verbose copy
-alias mv='mv -v' # verbose move
+alias cp='cp -v'
+alias mv='mv -v'
 
 # Creates parent directories on demand.
-alias mkdir='mkdir -pv' # create parent directories, verbose
+alias mkdir='mkdir -pv'
 
 # Displays disk space in a human-readable format.
 alias df='df -h'
 
 # Colorizes the diff output if possible.
 if type 'colordiff' &>/dev/null; then
-	alias diff='colordiff' # use colordiff if available
+	alias diff='colordiff'
 fi
 
 # Prints disk usage per directory non-recursively, sorted in human-readable format.
@@ -33,63 +30,13 @@ alias du='du -hs * | sort -rh'
 alias ping='ping -c 4'
 
 # Enables simple aliases to be used with sudo.
-alias sudo='sudo ' # allows sudo to be applied to aliases
+alias sudo='sudo '
 
-# Searches command history.
-alias h='history_search'          # custom function for searching history
-alias hs='history_session_search' # custom function for session history search
-
-# Gets local IP address.
-alias localip="ip route get 1 | awk '{print \$NF;exit}'"
-
-# Gets external IP address using different methods based on available commands.
-if command -v dig &>/dev/null; then
-	alias publicip='dig +short myip.opendns.com @resolver1.opendns.com' # use dig if available
-elif command -v curl >/dev/null; then
-	alias publicip='curl --silent --compressed --max-time 5 --url "https://ipinfo.io/ip"' # use curl if available
-else
-	alias publicip='wget -qO- --compression=auto --timeout=5 "https://ipinfo.io/ip"' # fallback to wget
-fi
-
-# Calculates MD5 hashes using available commands.
-if ! command -v md5sum >/dev/null; then
-	if command -v md5 >/dev/null; then
-		alias md5sum='md5 -r' # use md5 if available
-	else
-		alias md5sum='openssl md5 -r' # fallback to openssl
-	fi
-fi
-
-# Calculates SHA1 hashes.
-if ! command -v sha1sum >/dev/null; then
-	if command -v shasum >/dev/null; then
-		alias sha1sum='shasum -a 1 -p' # use shasum if available
-	else
-		alias sha1sum='openssl sha1 -r' # fallback to openssl
-	fi
-fi
-
-# Calculates SHA256 hashes.
-if ! command -v sha256sum >/dev/null; then
-	if command -v shasum >/dev/null; then
-		alias sha256sum='shasum -a 256 -p' # use shasum if available
-	else
-		alias sha256sum='openssl sha256 -r' # fallback to openssl
-	fi
-fi
-
-# Displays detailed weather and forecast.
+# Gets external IP address.
 if command -v curl >/dev/null; then
-	alias forecast='curl --silent --compressed --max-time 10 --url "https://wttr.in?F"' # use curl for forecast
+	alias publicip='curl --silent --compressed --max-time 5 --url "https://ipinfo.io/ip"'
 else
-	alias forecast='wget -qO- --compression=auto --timeout=10 "https://wttr.in?F"' # fallback to wget
-fi
-
-# Displays current weather.
-if command -v curl >/dev/null; then
-	alias weather='curl --silent --compressed --max-time 10 --url "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"' # use curl for weather
-else
-	alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"' # fallback to wget
+	alias publicip='wget -qO- --compression=auto --timeout=5 "https://ipinfo.io/ip"'
 fi
 
 if [ -z "$CLAUDE_SESSION_ID" ]; then
@@ -97,53 +44,52 @@ if [ -z "$CLAUDE_SESSION_ID" ]; then
 fi
 
 # Fuzzy finder for tldr and man pages.
-alias ftldr='compgen -c | fzf | xargs tldr' # tldr page finder
-alias fman='compgen -c | fzf | xargs man'   # man page finder
+alias ftldr='print -rl -- ${(k)commands} | fzf | xargs tldr'
+alias fman='print -rl -- ${(k)commands} | fzf | xargs man'
 
 # Aliases for text editors.
-alias cat='bat'                                                        # use bat instead of cat for syntax highlighting
-alias emacs="emacsclient -c -a 'emacs'"                                # GUI version of Spacemacs
-alias doom="emacsclient -c -s doom -a 'emacs'"                         # GUI version of Doom Emacs
-alias em="emacsclient -t -a 'emacs -ntw --with-profile doom'"          # Terminal version of Spacemacs
-alias dem="emacsclient -t -s doom -a 'emacs -ntw --with-profile doom'" # Terminal version of Doom Emacs
-alias vim="nvim"                                                       # use nvim instead of vim
-alias vi="\vim"                                                        # alias for vi
+alias cat='bat'
+alias emacs="emacsclient -c -a 'emacs'"
+alias doom="emacsclient -c -s doom -a 'emacs'"
+alias em="emacsclient -t -a 'emacs -ntw --with-profile doom'"
+alias dem="emacsclient -t -s doom -a 'emacs -ntw --with-profile doom'"
+alias vim="nvim"
+alias vi="\vim"
 
 # Chezmoi configuration editing.
-alias cz='chezmoi'                                # alias for chezmoi
-alias viz='chezmoi edit .zshrc'                   # edit .zshrc with chezmoi
-alias vit='chezmoi edit ~/.config/tmux/tmux.conf' # edit tmux config
-alias vic='chezmoi edit'                          # edit chezmoi configuration
-alias src='source ~/.zshrc'                       # source zsh configuration
-alias tsrc='tmux source ~/.config/tmux/tmux.conf' # source tmux configuration
+alias cz='chezmoi'
+alias viz='chezmoi edit .zshrc'
+alias vit='chezmoi edit ~/.config/tmux/tmux.conf'
+alias vic='chezmoi edit'
+alias src='source ~/.zshrc'
+alias tsrc='tmux source ~/.config/tmux/tmux.conf'
 
 # Tmux session management.
-alias t='tmux attach || tmux new-session' # attach to tmux session or create new
-alias ta='tmux attach -t'                 # attach to specified tmux session
-alias tn='tmux new-session'               # create new tmux session
-alias tls='tmux list-sessions'            # list tmux sessions
+alias t='tmux attach || tmux new-session'
+alias ta='tmux attach -t'
+alias tn='tmux new-session'
+alias tls='tmux list-sessions'
 
 # Simplified directory navigation.
-alias cd-='cd -'             #Return to last directory
-alias cd..='cd ..'           # move up one directory
-alias ..='cd ..'             # same as above
-alias ...='cd ../..'         # move up two directories
-alias cd ...='cd ../..'      # same as above with explicit command
-alias .3='cd ../../..'       # move up three directories
-alias .4='cd ../../../..'    # move up four directories
-alias .5='cd ../../../../..' # move up five directories
+alias cd-='cd -'
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias .3='cd ../../..'
+alias .4='cd ../../../..'
+alias .5='cd ../../../../..'
 
 # Exits the shell.
-alias :q='exit' # exit command
+alias :q='exit'
 
 # Clears the terminal.
-alias c='clear' # clear the screen
+alias c='clear'
 
 # Quick navigation to specific directories.
-alias dls='cd $HOME/Downloads'          # navigate to Downloads
-alias docs='cd $HOME/Documents'         # navigate to Documents
-alias dt='cd $HOME/Desktop'             # navigate to Desktop
-alias cdb='cd $HOME/code/booktoken-web' # navigate to booktoken-web project
+alias dls='cd $HOME/Downloads'
+alias docs='cd $HOME/Documents'
+alias dt='cd $HOME/Desktop'
+alias cdb='cd $HOME/code/booktoken-web'
 
 # Aliases for common, but unused programs
 alias neofetch='fastfetch'
@@ -151,15 +97,8 @@ alias neofetch='fastfetch'
 # rebind 'gs' from ghostscript to 'git status'
 alias gs="git status"
 
-# Restart Emacs server if not running.
-alias rem="killall emacs || echo 'Emacs server not running'; /usr/bin/emacs --daemon ; /usr/bin/emacs --with-profile doom --daemon" # restart Emacs server
-
-# Aliases under tmux for different contexts.
+# Aliases under tmux.
 if [ -n "$TMUX" ]; then
-	# Inside tmux
-	unalias ssh 2>/dev/null # remove existing ssh alias
-	alias td='tmux detach'  # detach from tmux session
-else
-	# Outside tmux
-	alias ssh='kitten ssh' # use kitten for ssh
+	unalias ssh 2>/dev/null
+	alias td='tmux detach'
 fi
